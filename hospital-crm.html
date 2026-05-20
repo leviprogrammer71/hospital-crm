@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinique The Grace of God - Système CRM</title>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.4/babel.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* ============================================================
+   CLINIQUE THE GRACE OF GOD — DESIGN SYSTEM v2
+   "Sauver des vies, gagner des âmes"
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+*:focus-visible{outline:2px solid var(--primary-400);outline-offset:2px;border-radius:4px}
+
+:root{
+  /* ----- PRIMARY (deep forest green — clinical / institutional) ----- */
+  --primary-50:#eff4f2;--primary-100:#d8e5e0;--primary-200:#b1cbc1;--primary-300:#7eab9d;
+  --primary-400:#4f8a78;--primary-500:#2e6e5a;--primary-600:#1f5747;
+  --primary-700:#1a3c34;--primary-800:#142e28;--primary-900:#0c1f1a;
+  --primary:#1a3c34;--primary-light:#2a5c4c;--secondary:#2e7d5b;--accent:#3a9d6e;
+
+  /* ----- GOLD (warm sacred accent) ----- */
+  --gold-50:#fbf7ee;--gold-100:#f4ead0;--gold-200:#e8d39d;--gold-300:#d9b566;
+  --gold-400:#c89a3f;--gold-500:#b0822c;--gold-600:#8a6624;
+  --gold:#9a7536;--gold-light:#f4ead0;
+
+  /* ----- SEMANTIC ----- */
+  --success-50:#e8f3ec;--success-100:#cfe6d6;--success-500:#2e8a5b;--success-600:#1d6d44;--success-700:#0e4a2c;
+  --warning-50:#fbf2dc;--warning-100:#f5e2a8;--warning-500:#c08a1d;--warning-600:#8c6310;--warning-700:#5e4108;
+  --danger-50:#fbe9e9;--danger-100:#f3c8c8;--danger-500:#b83230;--danger-600:#8c2422;--danger-700:#601817;
+  --info-50:#e7eef8;--info-100:#c7d8ee;--info-500:#2563a8;--info-600:#1b4a83;--info-700:#0f315a;
+  --warning:#c08a1d;--danger:#b83230;--info:#2563a8;
+
+  /* ----- NEUTRALS ----- */
+  --ink-900:#0c1816;--ink-800:#1a2823;--ink-700:#2a3a34;--ink-600:#3d524b;
+  --ink-500:#5a6e67;--ink-400:#7d8d87;--ink-300:#a4b2ad;--ink-200:#c8d2ce;
+  --ink-100:#e2e8e5;--ink-50:#eef1ef;--ink-25:#f6f8f7;
+
+  --bg:#f3f5f3;--bg-subtle:#eaeeec;--surface:#ffffff;--surface-raised:#ffffff;
+  --text:#142823;--text-light:#5a6e67;--text-muted:#7d8d87;
+  --border:#dde3df;--border-strong:#c8d2ce;--border-subtle:#e8ede9;
+
+  /* ----- TYPE SCALE ----- */
+  --fs-xs:11px;--fs-sm:12px;--fs-md:13px;--fs-base:14px;--fs-lg:16px;--fs-xl:18px;
+  --fs-2xl:22px;--fs-3xl:28px;--fs-4xl:36px;
+  --lh-tight:1.2;--lh-snug:1.35;--lh-normal:1.55;--lh-relaxed:1.7;
+
+  /* ----- SPACING (4px base) ----- */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;
+  --s-7:32px;--s-8:40px;--s-9:48px;--s-10:64px;
+
+  /* ----- RADIUS ----- */
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:20px;--r-full:9999px;
+  --radius:8px;
+
+  /* ----- ELEVATION (4 levels) ----- */
+  --e-0:0 0 0 1px rgba(20,40,35,.06);
+  --e-1:0 1px 2px rgba(20,40,35,.04),0 1px 3px rgba(20,40,35,.06);
+  --e-2:0 2px 4px rgba(20,40,35,.04),0 4px 12px rgba(20,40,35,.08);
+  --e-3:0 4px 8px rgba(20,40,35,.06),0 12px 28px rgba(20,40,35,.12);
+  --e-4:0 8px 16px rgba(20,40,35,.08),0 24px 48px rgba(20,40,35,.16);
+  --shadow:var(--e-1);--shadow-lg:var(--e-3);
+
+  /* ----- MOTION ----- */
+  --ease-out:cubic-bezier(.2,.7,.2,1);--ease-in-out:cubic-bezier(.4,0,.2,1);
+  --dur-fast:120ms;--dur-base:180ms;--dur-slow:280ms;
+
+  /* ----- LAYOUT ----- */
+  --sidebar-w:248px;--sidebar-w-collapsed:64px;--topbar-h:56px;--content-max:1640px;
+}
+
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:var(--fs-md);line-height:var(--lh-normal);
+  font-feature-settings:'cv02','cv03','cv04','cv11','ss01';
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+input,select,textarea,button{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,h4,h5,h6{font-weight:600;line-height:var(--lh-snug);color:var(--text);letter-spacing:-.01em}
+h1{font-size:var(--fs-2xl);font-weight:700;letter-spacing:-.02em}
+h2{font-size:var(--fs-xl)}
+h3{font-size:var(--fs-lg)}
+a{color:var(--primary-500);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--gold-100);color:var(--primary-800)}
+
+/* Subtle scrollbars */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-300);background-clip:padding-box;border:2px solid transparent}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.login-page{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% -10%, rgba(154,117,54,.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at -10% 110%, rgba(46,125,91,.12), transparent 60%),
+    linear-gradient(180deg, #f3f5f3 0%, #eaeeec 100%);
+  position:relative;overflow:hidden;padding:var(--s-4);
+}
+.login-page::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--ink-100) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-100) 1px, transparent 1px);
+  background-size:48px 48px;opacity:.35;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.login-page::after{
+  content:'';position:absolute;width:520px;height:520px;left:50%;top:50%;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:.04;
+  background:
+    linear-gradient(var(--primary-700),var(--primary-700)) center/110px 28px no-repeat,
+    linear-gradient(var(--primary-700),var(--primary-700)) center/28px 110px no-repeat;
+}
+.login-card{
+  position:relative;z-index:1;background:var(--surface);
+  border-radius:var(--r-xl);padding:var(--s-9) var(--s-8);width:440px;max-width:100%;
+  box-shadow:var(--e-4);border:1px solid var(--border-subtle);
+  animation:loginEntrance 600ms var(--ease-out);
+}
+@keyframes loginEntrance{
+  from{opacity:0;transform:translateY(16px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.login-card .logo-area{text-align:center;margin-bottom:var(--s-7);padding-bottom:var(--s-6);border-bottom:1px solid var(--border-subtle)}
+.login-card .logo-area .logo-fallback{
+  width:72px;height:72px;border-radius:var(--r-lg);margin:0 auto var(--s-3);
+  background:linear-gradient(135deg,var(--primary-700) 0%,var(--primary-500) 100%);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:32px;box-shadow:var(--e-2),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.login-card .clinic-name{font-size:var(--fs-xl);font-weight:700;color:var(--primary-700);margin-top:var(--s-3);letter-spacing:-.01em}
+.login-card .clinic-sub{font-size:10px;color:var(--gold-600);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-top:var(--s-1)}
+.login-card .clinic-addr{color:var(--text-light);font-size:var(--fs-xs);margin-top:var(--s-2);display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-group{margin-bottom:var(--s-4)}
+.form-group label{
+  display:flex;align-items:center;gap:6px;
+  font-weight:600;font-size:var(--fs-xs);color:var(--ink-500);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:var(--s-2);
+}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:10px 12px;border:1px solid var(--border);
+  border-radius:var(--r-md);font-size:var(--fs-base);background:var(--surface);color:var(--text);
+  transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast);
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--ink-300)}
+.form-group input:hover,.form-group select:hover,.form-group textarea:hover{border-color:var(--border-strong)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  outline:none;border-color:var(--primary-500);
+  box-shadow:0 0 0 3px rgba(46,110,90,.14);
+}
+.form-group input:disabled,.form-group select:disabled,.form-group textarea:disabled{background:var(--ink-25);color:var(--text-muted);cursor:not-allowed}
+.form-group textarea{resize:vertical;min-height:88px;line-height:var(--lh-normal)}
+.form-group select{cursor:pointer;padding-right:30px;background:#fff;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-500) 50%),linear-gradient(135deg,var(--ink-500) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  appearance:none;-webkit-appearance:none;-moz-appearance:none}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  padding:9px 16px;border-radius:var(--r-md);border:1px solid transparent;
+  font-weight:600;font-size:var(--fs-md);cursor:pointer;
+  transition:background var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-fast),border-color var(--dur-fast);
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;
+  line-height:1;letter-spacing:-.005em;user-select:none;
+}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;pointer-events:none}
+.btn-primary{background:var(--primary-700);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),var(--e-1)}
+.btn-primary:hover{background:var(--primary-600)}
+.btn-success{background:var(--success-500);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),var(--e-1)}
+.btn-success:hover{background:var(--success-600)}
+.btn-danger{background:var(--danger-500);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),var(--e-1)}
+.btn-danger:hover{background:var(--danger-600)}
+.btn-warning{background:var(--warning-500);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),var(--e-1)}
+.btn-warning:hover{background:var(--warning-600)}
+.btn-gold{background:var(--gold);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),var(--e-1)}
+.btn-gold:hover{background:var(--gold-600)}
+.btn-outline{background:var(--surface);border-color:var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--ink-25);border-color:var(--border-strong)}
+.btn-sm{padding:6px 12px;font-size:var(--fs-sm)}
+.btn-lg{padding:12px 22px;font-size:var(--fs-base)}
+.btn-block{width:100%;justify-content:center}
+.btn i{font-size:.95em}
+.btn.loading{opacity:.75;pointer-events:none;position:relative}
+
+/* ============================================================
+   LAYOUT (sidebar + topbar + content)
+   ============================================================ */
+.layout{display:flex;height:100vh;overflow:hidden;background:var(--bg)}
+
+/* Sidebar */
+.sidebar{
+  width:var(--sidebar-w);background:linear-gradient(180deg,var(--primary-800) 0%,var(--primary-700) 60%,var(--primary-800) 100%);
+  color:#fff;display:flex;flex-direction:column;flex-shrink:0;
+  border-right:1px solid rgba(0,0,0,.2);position:relative;z-index:5;
+}
+.sidebar::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.06) 30%,rgba(255,255,255,.06) 70%,transparent);
+}
+.sidebar-header{padding:var(--s-5) var(--s-5) var(--s-4);border-bottom:1px solid rgba(255,255,255,.06)}
+.sidebar-header .brand{display:flex;align-items:center;gap:var(--s-3)}
+.sidebar-header .brand-icon{
+  width:40px;height:40px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,var(--gold-400),var(--gold-600));
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 6px rgba(154,117,54,.3);
+  flex-shrink:0;
+}
+.sidebar-header h2{font-size:var(--fs-base);font-weight:700;line-height:1.2;color:#fff;letter-spacing:-.01em}
+.sidebar-header small{display:block;font-size:9.5px;color:rgba(255,255,255,.45);margin-top:3px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+
+.sidebar-section-label{
+  padding:var(--s-4) var(--s-5) var(--s-2);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.35);
+}
+
+.sidebar-nav{flex:1;padding:var(--s-3) var(--s-3);overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.nav-item{
+  display:flex;align-items:center;gap:var(--s-3);padding:9px 12px;cursor:pointer;
+  transition:background var(--dur-fast),color var(--dur-fast),transform var(--dur-fast);
+  font-size:var(--fs-md);color:rgba(255,255,255,.62);
+  border-radius:var(--r-md);position:relative;font-weight:500;
+}
+.nav-item i{width:18px;text-align:center;font-size:13px;opacity:.85}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item:hover i{opacity:1}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(58,157,110,.2) 0%,rgba(58,157,110,.08) 100%);
+  color:#fff;font-weight:600;
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:-3px;top:50%;transform:translateY(-50%);
+  width:3px;height:60%;background:var(--gold-400);border-radius:0 3px 3px 0;
+  box-shadow:0 0 12px rgba(216,181,102,.6);
+}
+.nav-item.active i{color:var(--gold-300);opacity:1}
+.nav-item .nav-badge{
+  margin-left:auto;background:rgba(255,255,255,.14);color:#fff;
+  padding:2px 8px;border-radius:var(--r-full);font-size:10px;font-weight:700;min-width:20px;text-align:center;
+}
+.nav-item.active .nav-badge{background:var(--gold-500);color:#fff}
+
+.sidebar-footer{padding:var(--s-4) var(--s-5);border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-footer .user-info{display:flex;align-items:center;gap:var(--s-3)}
+.sidebar-footer .avatar{
+  width:36px;height:36px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.04));
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--fs-sm);
+  color:#fff;border:1px solid rgba(255,255,255,.1);flex-shrink:0;
+}
+.sidebar-footer .user-details{font-size:var(--fs-xs);min-width:0;flex:1}
+.sidebar-footer .user-details .name{font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-footer .user-details .role{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logout-btn{
+  color:rgba(255,255,255,.5);cursor:pointer;font-size:var(--fs-xs);
+  display:flex;align-items:center;gap:6px;margin-top:var(--s-3);
+  transition:color var(--dur-fast);padding:6px 4px;border-radius:var(--r-sm);
+}
+.logout-btn:hover{color:#ff8888}
+
+/* ----- TOP BAR ----- */
+.content-shell{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{
+  height:var(--topbar-h);background:var(--surface);
+  border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;gap:var(--s-4);padding:0 var(--s-6);
+  flex-shrink:0;position:relative;z-index:4;
+}
+.topbar-title{
+  display:flex;flex-direction:column;gap:1px;min-width:0;
+}
+.topbar-title .crumb{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.topbar-title .title{font-size:var(--fs-base);font-weight:600;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-spacer{flex:1}
+.topbar-clock{
+  display:flex;align-items:center;gap:8px;padding:7px 12px;
+  background:var(--ink-25);border:1px solid var(--border-subtle);border-radius:var(--r-md);
+  font-size:var(--fs-sm);color:var(--text-light);font-variant-numeric:tabular-nums;font-weight:500;
+}
+.topbar-clock .dot{width:6px;height:6px;border-radius:50%;background:var(--success-500);box-shadow:0 0 0 3px rgba(46,138,91,.18);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.topbar-user{
+  display:flex;align-items:center;gap:var(--s-3);padding:4px 6px 4px 4px;
+  border-radius:var(--r-md);transition:background var(--dur-fast);
+}
+.topbar-user:hover{background:var(--ink-25)}
+.topbar-user .avatar-circle{
+  width:34px;height:34px;border-radius:var(--r-full);
+  background:linear-gradient(135deg,var(--primary-600),var(--primary-700));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:var(--fs-sm);letter-spacing:.02em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+}
+.topbar-user .info{display:flex;flex-direction:column;gap:0;min-width:0}
+.topbar-user .info .nm{font-size:var(--fs-sm);font-weight:600;color:var(--text);line-height:1.2;white-space:nowrap}
+.topbar-user .info .rl{font-size:10px;color:var(--text-muted);line-height:1.2;white-space:nowrap}
+.topbar-icon-btn{
+  width:36px;height:36px;border-radius:var(--r-md);background:var(--ink-25);
+  border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-500);cursor:pointer;transition:all var(--dur-fast);position:relative;
+}
+.topbar-icon-btn:hover{background:var(--ink-50);color:var(--text);border-color:var(--border-strong)}
+
+/* ----- MAIN CONTENT ----- */
+.main-content{
+  flex:1;overflow-y:auto;padding:var(--s-7) var(--s-7) var(--s-9);background:var(--bg);
+  scroll-behavior:smooth;contain:content;
+}
+.main-content > *{max-width:var(--content-max);margin-left:auto;margin-right:auto}
+.page-header{
+  margin-bottom:var(--s-6);display:flex;justify-content:space-between;align-items:flex-start;gap:var(--s-4);
+  animation:fadeUp var(--dur-slow) var(--ease-out);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page-header h1{font-size:var(--fs-3xl);font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1.15}
+.page-header p{color:var(--text-light);font-size:var(--fs-md);margin-top:var(--s-2);line-height:var(--lh-normal)}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card{
+  background:var(--surface);border-radius:var(--r-lg);padding:var(--s-6);
+  box-shadow:var(--e-1);margin-bottom:var(--s-4);
+  border:1px solid var(--border-subtle);
+  transition:box-shadow var(--dur-base),transform var(--dur-base),border-color var(--dur-base);
+  animation:fadeUp var(--dur-slow) var(--ease-out);
+}
+.card:hover{box-shadow:var(--e-2);border-color:var(--border)}
+.card h3{font-size:var(--fs-base);font-weight:600;margin-bottom:var(--s-3);color:var(--text);display:flex;align-items:center;gap:var(--s-2);letter-spacing:-.01em}
+.card h3 i{color:var(--primary-500);font-size:.95em}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--s-4);gap:var(--s-4);flex-wrap:wrap}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s-4);margin-bottom:var(--s-6)}
+.stat-card{
+  background:var(--surface);border-radius:var(--r-lg);padding:var(--s-5) var(--s-5) var(--s-4);
+  box-shadow:var(--e-1);border:1px solid var(--border-subtle);
+  position:relative;overflow:hidden;transition:transform var(--dur-base),box-shadow var(--dur-base);
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--e-2)}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--primary-500));
+}
+.stat-card.gold::before{background:linear-gradient(90deg,var(--gold-400),var(--gold-600))}
+.stat-card.danger::before{background:linear-gradient(90deg,#d96363,var(--danger-500))}
+.stat-card.info::before{background:linear-gradient(90deg,#4d8ec9,var(--info-500))}
+.stat-card .stat-icon{
+  width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  font-size:16px;margin-bottom:var(--s-3);
+}
+.stat-card .stat-icon.green{background:var(--success-50);color:var(--success-600)}
+.stat-card .stat-icon.gold{background:var(--gold-100);color:var(--gold-600)}
+.stat-card .stat-icon.red{background:var(--danger-50);color:var(--danger-600)}
+.stat-card .stat-icon.blue{background:var(--info-50);color:var(--info-600)}
+.stat-card .stat-value{font-size:var(--fs-3xl);font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat-card .stat-label{font-size:var(--fs-sm);color:var(--text-light);margin-top:var(--s-1);font-weight:500}
+.stat-card .stat-trend{
+  font-size:var(--fs-xs);margin-top:var(--s-3);padding-top:var(--s-3);
+  border-top:1px solid var(--border-subtle);
+  display:flex;align-items:center;gap:6px;color:var(--text-light);font-weight:500;
+}
+.stat-card .stat-trend.up{color:var(--success-600)}
+.stat-card .stat-trend.down{color:var(--danger-500)}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.card table,table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:11px 14px;text-align:left;font-size:var(--fs-sm);vertical-align:middle}
+th{
+  background:var(--ink-25);font-weight:600;color:var(--text-light);
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+  border-bottom:1px solid var(--border);border-top:1px solid var(--border-subtle);
+  position:sticky;top:0;z-index:1;
+}
+th:first-child{border-top-left-radius:var(--r-md)}
+th:last-child{border-top-right-radius:var(--r-md)}
+td{border-bottom:1px solid var(--border-subtle);color:var(--text)}
+tbody tr{transition:background var(--dur-fast)}
+tbody tr:nth-child(even) td{background:var(--ink-25)}
+tbody tr:hover td{background:var(--primary-50)}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge{
+  padding:3px 9px;border-radius:var(--r-full);font-size:10.5px;font-weight:600;
+  display:inline-flex;align-items:center;gap:4px;line-height:1.4;
+  letter-spacing:.01em;white-space:nowrap;
+}
+.badge-green{background:var(--success-50);color:var(--success-700);box-shadow:inset 0 0 0 1px var(--success-100)}
+.badge-yellow{background:var(--warning-50);color:var(--warning-700);box-shadow:inset 0 0 0 1px var(--warning-100)}
+.badge-red{background:var(--danger-50);color:var(--danger-700);box-shadow:inset 0 0 0 1px var(--danger-100)}
+.badge-blue{background:var(--info-50);color:var(--info-700);box-shadow:inset 0 0 0 1px var(--info-100)}
+.badge-gold{background:var(--gold-100);color:var(--gold-600);box-shadow:inset 0 0 0 1px rgba(154,117,54,.18)}
+.badge-purple{background:#efe9f7;color:#4a3080;box-shadow:inset 0 0 0 1px #d7c6f0}
+.badge-new{
+  background:linear-gradient(135deg,var(--accent),var(--primary-500));color:#fff;
+  text-transform:uppercase;letter-spacing:.5px;font-size:9.5px;font-weight:700;
+  box-shadow:0 1px 3px rgba(46,125,91,.3);
+}
+.badge-sm{padding:1.5px 7px;font-size:10px}
+
+/* Insurance-specific colored badges (override default gold treatment with subtler distinction) */
+.ins-regulier{background:var(--ink-50);color:var(--ink-700);box-shadow:inset 0 0 0 1px var(--ink-100)}
+.ins-csu{background:#e7f1ec;color:#185a3c;box-shadow:inset 0 0 0 1px #c8e0d0}
+.ins-academia{background:#e8eff8;color:#1c4e85;box-shadow:inset 0 0 0 1px #c8d8ec}
+.ins-amc{background:#f3edd9;color:#7a5a10;box-shadow:inset 0 0 0 1px #e2d5a8}
+.ins-activa{background:#f1e7f0;color:#673366;box-shadow:inset 0 0 0 1px #dec6dd}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs{display:flex;gap:0;margin-bottom:var(--s-5);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{
+  padding:10px 18px;cursor:pointer;font-weight:500;font-size:var(--fs-md);
+  color:var(--text-light);border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all var(--dur-fast);white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
+.tab.active{color:var(--primary-700);border-bottom-color:var(--gold-400);font-weight:600}
+.tab:hover:not(.active){color:var(--text)}
+
+/* ============================================================
+   PATIENT FLOW STEPPER
+   ============================================================ */
+.patient-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:var(--s-3) 0 var(--s-2);padding:8px 12px;background:var(--ink-25);border-radius:var(--r-md);border:1px solid var(--border-subtle)}
+.flow-step{
+  position:relative;padding:5px 10px 5px 24px;font-size:10.5px;font-weight:600;
+  color:var(--text-muted);background:transparent;display:flex;align-items:center;
+  text-transform:none;letter-spacing:0;
+}
+.flow-step::before{
+  content:'';position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  width:12px;height:12px;border-radius:50%;background:var(--ink-100);
+  border:2px solid var(--surface);box-shadow:inset 0 0 0 1px var(--border-strong);
+  transition:all var(--dur-base);
+}
+.flow-step:not(:last-child)::after{
+  content:'';position:absolute;right:-2px;top:50%;transform:translateY(-50%);
+  width:8px;height:2px;background:var(--ink-100);
+}
+.flow-step.done{color:var(--success-600)}
+.flow-step.done::before{background:var(--success-500);box-shadow:inset 0 0 0 2px var(--surface),0 0 0 1px var(--success-500)}
+.flow-step.done:not(:last-child)::after{background:var(--success-500)}
+.flow-step.current{color:var(--primary-700);font-weight:700}
+.flow-step.current::before{
+  background:var(--gold-400);box-shadow:inset 0 0 0 2px var(--surface),0 0 0 1px var(--gold-500),0 0 0 4px rgba(216,181,102,.25);
+  animation:pulse-step 2s infinite;
+}
+@keyframes pulse-step{0%,100%{box-shadow:inset 0 0 0 2px var(--surface),0 0 0 1px var(--gold-500),0 0 0 4px rgba(216,181,102,.25)}50%{box-shadow:inset 0 0 0 2px var(--surface),0 0 0 1px var(--gold-500),0 0 0 7px rgba(216,181,102,.12)}}
+
+/* ============================================================
+   PATIENT AVATAR
+   ============================================================ */
+.p-avatar{
+  width:42px;height:42px;border-radius:var(--r-full);display:inline-flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:var(--fs-md);color:#fff;letter-spacing:.01em;flex-shrink:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+}
+.p-avatar.male{background:linear-gradient(135deg,#3b6e9a,#2a527a)}
+.p-avatar.female{background:linear-gradient(135deg,#b96894,#8a456e)}
+.p-avatar.unk{background:linear-gradient(135deg,var(--ink-400),var(--ink-500))}
+.p-avatar.sm{width:32px;height:32px;font-size:var(--fs-xs)}
+.p-avatar.lg{width:56px;height:56px;font-size:var(--fs-xl)}
+.p-headline{display:flex;align-items:center;gap:var(--s-3)}
+.p-headline .p-name{font-weight:600;font-size:var(--fs-lg);color:var(--text);letter-spacing:-.01em}
+.p-headline .p-meta{font-size:var(--fs-xs);color:var(--text-muted);margin-top:2px}
+
+/* ============================================================
+   STOCK
+   ============================================================ */
+.stock-low{color:var(--danger-600);font-weight:600}
+.stock-ok{color:var(--success-600);font-weight:500}
+.stock-bar{height:6px;border-radius:var(--r-full);background:var(--ink-100);overflow:hidden;width:90px;display:inline-block;vertical-align:middle;margin-left:8px}
+.stock-bar-fill{height:100%;border-radius:var(--r-full);transition:width var(--dur-slow)}
+
+/* ============================================================
+   CONFIDENTIAL NOTE
+   ============================================================ */
+.confidential-note{
+  background:linear-gradient(180deg,#fbf6ec 0%,#f8f0db 100%);
+  border:1px solid #e8d8b8;border-left:3px solid var(--gold-500);
+  border-radius:var(--r-md);padding:var(--s-4);margin:var(--s-2) 0;position:relative;
+}
+.confidential-note::before{
+  content:"CONFIDENTIEL · Medecin + Admin";font-weight:700;
+  font-size:9.5px;color:var(--gold-600);text-transform:uppercase;letter-spacing:1.2px;
+  display:flex;align-items:center;gap:6px;margin-bottom:var(--s-2);
+  padding-bottom:var(--s-2);border-bottom:1px dashed #e0c898;
+}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+.filter-bar{
+  display:flex;gap:var(--s-3);margin-bottom:var(--s-4);flex-wrap:wrap;align-items:center;
+  padding:var(--s-3) var(--s-4);background:var(--surface);border-radius:var(--r-md);
+  border:1px solid var(--border-subtle);
+}
+.filter-bar select,.filter-bar input{padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-md);font-size:var(--fs-sm);background:var(--surface);color:var(--text);transition:all var(--dur-fast)}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--primary-500);box-shadow:0 0 0 3px rgba(46,110,90,.12)}
+
+/* ============================================================
+   AI ASSISTANT
+   ============================================================ */
+.ai-fab{
+  position:fixed;width:52px;height:52px;border-radius:var(--r-full);
+  background:linear-gradient(135deg,var(--primary-600),var(--primary-800));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;
+  cursor:grab;box-shadow:var(--e-3),inset 0 1px 0 rgba(255,255,255,.12);
+  z-index:999;user-select:none;transition:transform var(--dur-base),box-shadow var(--dur-base);
+}
+.ai-fab:hover{transform:scale(1.05);box-shadow:var(--e-4),inset 0 1px 0 rgba(255,255,255,.12)}
+.ai-fab:active{cursor:grabbing}
+.ai-panel{
+  position:fixed;bottom:80px;right:24px;width:380px;max-height:520px;
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--e-4);
+  z-index:998;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--border-subtle);animation:fadeUp var(--dur-base) var(--ease-out);
+}
+.ai-panel-header{
+  padding:var(--s-4) var(--s-5);background:linear-gradient(135deg,var(--primary-700),var(--primary-800));
+  color:#fff;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:var(--fs-base);
+}
+.ai-panel-body{flex:1;overflow-y:auto;padding:var(--s-4);max-height:340px;background:var(--ink-25)}
+.ai-panel-input{padding:var(--s-3);border-top:1px solid var(--border-subtle);display:flex;gap:var(--s-2);background:var(--surface)}
+.ai-panel-input input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);font-size:var(--fs-md)}
+.ai-panel-input input:focus{outline:none;border-color:var(--primary-500);box-shadow:0 0 0 3px rgba(46,110,90,.12)}
+.ai-msg{margin-bottom:var(--s-2);padding:10px 14px;border-radius:var(--r-md);font-size:var(--fs-md);max-width:85%;line-height:var(--lh-normal)}
+.ai-msg.user{background:var(--primary-600);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.ai-msg.bot{background:var(--surface);color:var(--text);box-shadow:var(--e-1);border:1px solid var(--border-subtle);border-bottom-left-radius:4px}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(12,24,22,.55);backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+  z-index:1000;padding:var(--s-4);animation:fadeIn var(--dur-base) var(--ease-out);
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--surface);border-radius:var(--r-xl);padding:var(--s-7);width:560px;max-width:100%;
+  max-height:90vh;overflow-y:auto;box-shadow:var(--e-4);border:1px solid var(--border-subtle);
+  animation:modalIn var(--dur-base) var(--ease-out);
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.modal h2{font-size:var(--fs-xl);font-weight:700;margin-bottom:var(--s-5);color:var(--text);display:flex;align-items:center;gap:var(--s-2)}
+.modal h2 i{color:var(--primary-500)}
+
+/* ============================================================
+   WELCOME BANNER (admin dashboard)
+   ============================================================ */
+.welcome-banner{
+  background:linear-gradient(135deg,var(--primary-700) 0%,var(--primary-800) 60%,var(--primary-900) 100%);
+  border-radius:var(--r-lg);padding:var(--s-6) var(--s-7);color:#fff;
+  margin-bottom:var(--s-6);position:relative;overflow:hidden;
+}
+.welcome-banner h2{font-size:var(--fs-xl);font-weight:600;margin-bottom:var(--s-1)}
+.welcome-banner p{opacity:.7;font-size:var(--fs-sm)}
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
+.notif-bell{position:relative;cursor:pointer;padding:7px 11px;border-radius:var(--r-md);transition:all var(--dur-fast)}
+.notif-bell:hover{background:var(--ink-50)}
+.notif-bell .notif-count{
+  position:absolute;top:1px;right:1px;background:var(--danger-500);color:#fff;
+  font-size:9.5px;font-weight:700;min-width:17px;height:17px;border-radius:var(--r-full);
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  box-shadow:0 0 0 2px var(--surface);
+}
+.notif-panel{
+  position:absolute;top:calc(100% + 8px);right:0;width:380px;max-height:480px;
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--e-4);
+  z-index:1100;overflow:hidden;border:1px solid var(--border-subtle);
+  animation:fadeUp var(--dur-base) var(--ease-out);display:flex;flex-direction:column;
+}
+.notif-panel-header{
+  padding:var(--s-4) var(--s-5);background:var(--surface);
+  border-bottom:1px solid var(--border-subtle);display:flex;justify-content:space-between;
+  align-items:center;font-weight:700;font-size:var(--fs-base);color:var(--text);
+}
+.notif-panel-body{max-height:400px;overflow-y:auto;background:var(--ink-25)}
+.notif-item{
+  padding:var(--s-3) var(--s-5);border-bottom:1px solid var(--border-subtle);
+  cursor:pointer;transition:background var(--dur-fast);font-size:var(--fs-sm);background:var(--surface);
+}
+.notif-item:hover{background:var(--ink-25)}
+.notif-item.unread{background:var(--primary-50);border-left:3px solid var(--accent);padding-left:calc(var(--s-5) - 3px)}
+.notif-item .notif-time{font-size:10px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:4px}
+.notif-item .notif-icon{
+  display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+  border-radius:var(--r-full);margin-right:10px;font-size:12px;flex-shrink:0;
+}
+
+/* ============================================================
+   PATIENT DOSSIER (medical chart modal)
+   ============================================================ */
+.dossier-overlay{
+  position:fixed;inset:0;background:rgba(12,24,22,.6);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);z-index:1200;display:flex;align-items:center;justify-content:center;
+  padding:var(--s-4);animation:fadeIn var(--dur-base) var(--ease-out);
+}
+.dossier-panel{
+  background:var(--surface);width:880px;max-width:100%;max-height:92vh;
+  border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--e-4);
+  display:flex;flex-direction:column;animation:modalIn var(--dur-base) var(--ease-out);
+}
+.dossier-header{
+  padding:var(--s-5) var(--s-6);
+  background:linear-gradient(135deg,var(--primary-700),var(--primary-800));
+  color:#fff;display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+}
+.dossier-header h2{font-size:var(--fs-xl);font-weight:700;margin:0;display:flex;align-items:center;gap:var(--s-2)}
+.dossier-header .close-x{cursor:pointer;width:32px;height:32px;border-radius:var(--r-full);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;transition:background var(--dur-fast)}
+.dossier-header .close-x:hover{background:rgba(255,255,255,.2)}
+
+.dossier-tabs{
+  display:flex;background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 var(--s-6);gap:0;overflow-x:auto;flex-shrink:0;
+}
+.dossier-tab{
+  padding:13px 18px;cursor:pointer;font-size:var(--fs-sm);font-weight:600;
+  color:var(--text-light);border-bottom:2px solid transparent;
+  transition:all var(--dur-fast);display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.dossier-tab:hover{color:var(--text)}
+.dossier-tab.active{color:var(--primary-700);border-bottom-color:var(--gold-400)}
+.dossier-tab .ct{background:var(--ink-100);color:var(--text-light);padding:1px 7px;border-radius:var(--r-full);font-size:10px;font-weight:700}
+.dossier-tab.active .ct{background:var(--gold-100);color:var(--gold-600)}
+
+.dossier-body{flex:1;overflow-y:auto;padding:var(--s-6);background:var(--ink-25)}
+.dossier-section{
+  margin-bottom:var(--s-5);background:var(--surface);border-radius:var(--r-lg);
+  padding:var(--s-5);border:1px solid var(--border-subtle);
+}
+.dossier-section h4{
+  font-size:var(--fs-xs);font-weight:700;color:var(--primary-700);
+  text-transform:uppercase;letter-spacing:1.2px;margin-bottom:var(--s-4);
+  padding-bottom:var(--s-3);border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;gap:var(--s-2);
+}
+.dossier-section h4 i{color:var(--gold-500);font-size:13px}
+
+/* Mini vital gauge cards (used in dossier vitals section) */
+.vital-gauge{
+  background:linear-gradient(180deg,var(--ink-25),var(--surface));
+  border:1px solid var(--border-subtle);border-radius:var(--r-md);
+  padding:var(--s-3);text-align:center;position:relative;overflow:hidden;
+}
+.vital-gauge .vlabel{font-size:10px;color:var(--text-light);font-weight:600;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:6px}
+.vital-gauge .vlabel i{color:var(--primary-500);font-size:11px}
+.vital-gauge .vvalue{font-size:var(--fs-xl);font-weight:700;color:var(--text);line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.vital-gauge .vunit{font-size:11px;color:var(--text-muted);font-weight:500;margin-left:2px}
+
+/* Timeline */
+.timeline-item{
+  position:relative;padding:10px 0 14px 30px;border-left:2px solid var(--border);
+  margin-left:10px;
+}
+.timeline-item:last-child{border-left-color:transparent}
+.timeline-item::before{
+  content:'';position:absolute;left:-7px;top:14px;width:12px;height:12px;border-radius:50%;
+  background:var(--accent);border:3px solid var(--surface);
+  box-shadow:0 0 0 1px var(--accent);
+}
+.timeline-item.lab::before{background:var(--info-500);box-shadow:0 0 0 1px var(--info-500)}
+.timeline-item.payment::before{background:var(--gold-500);box-shadow:0 0 0 1px var(--gold-500)}
+.timeline-item.rx::before{background:var(--warning-500);box-shadow:0 0 0 1px var(--warning-500)}
+.timeline-item.note::before{background:var(--danger-500);box-shadow:0 0 0 1px var(--danger-500)}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{
+  pointer-events:auto;padding:12px 16px 12px 14px;border-radius:var(--r-md);
+  font-size:var(--fs-md);font-weight:500;color:#fff;
+  box-shadow:var(--e-3);display:flex;align-items:center;gap:10px;
+  animation:toastIn var(--dur-slow) var(--ease-out);max-width:420px;
+  line-height:var(--lh-snug);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:saturate(120%);min-width:280px;
+}
+.toast.success{background:linear-gradient(135deg,var(--success-500),var(--success-600))}
+.toast.error{background:linear-gradient(135deg,#c54a48,var(--danger-600))}
+.toast.info{background:linear-gradient(135deg,#3577b8,var(--info-600))}
+.toast.warning{background:linear-gradient(135deg,#c89a3f,var(--warning-600))}
+.toast i:first-child{font-size:16px;flex-shrink:0;opacity:.95}
+.toast-close{margin-left:auto;cursor:pointer;opacity:.7;font-size:18px;padding:0 4px;line-height:1;font-weight:300}
+.toast-close:hover{opacity:1}
+@keyframes toastIn{
+  from{transform:translateX(110%) scale(.96);opacity:0}
+  to{transform:translateX(0) scale(1);opacity:1}
+}
+
+/* ============================================================
+   CONFIRM
+   ============================================================ */
+.confirm-overlay{position:fixed;inset:0;background:rgba(12,24,22,.5);backdrop-filter:blur(4px);z-index:9998;display:flex;align-items:center;justify-content:center}
+.confirm-box{background:var(--surface);border-radius:var(--r-xl);padding:var(--s-7);width:420px;box-shadow:var(--e-4);text-align:center;border:1px solid var(--border-subtle)}
+.confirm-box h3{font-size:var(--fs-lg);font-weight:700;color:var(--text);margin-bottom:var(--s-2)}
+.confirm-box p{font-size:var(--fs-md);color:var(--text-light);margin-bottom:var(--s-5);line-height:var(--lh-normal)}
+.confirm-box .actions{display:flex;gap:var(--s-3);justify-content:center}
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+.search-bar{position:relative;margin-bottom:var(--s-4)}
+.search-bar input{
+  width:100%;padding:12px 16px 12px 44px;border:1px solid var(--border);
+  border-radius:var(--r-md);font-size:var(--fs-base);background:var(--surface);
+  transition:all var(--dur-fast);
+}
+.search-bar input:focus{outline:none;border-color:var(--primary-500);box-shadow:0 0 0 3px rgba(46,110,90,.14)}
+.search-bar i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state{
+  text-align:center;padding:var(--s-9) var(--s-5);color:var(--text-muted);
+}
+.empty-state-icon{
+  width:72px;height:72px;border-radius:var(--r-full);margin:0 auto var(--s-4);
+  background:var(--ink-25);display:flex;align-items:center;justify-content:center;
+  font-size:28px;color:var(--ink-300);
+}
+.empty-state-title{font-size:var(--fs-lg);font-weight:600;color:var(--text);margin-bottom:var(--s-1)}
+.empty-state-body{font-size:var(--fs-sm);color:var(--text-light);max-width:360px;margin:0 auto;line-height:var(--lh-normal)}
+
+/* ============================================================
+   CHART (pure SVG, used in financial reports)
+   ============================================================ */
+.chart-svg{display:block;width:100%;height:auto;overflow:visible}
+.chart-bar{transition:opacity var(--dur-fast)}
+.chart-bar:hover{opacity:.85}
+
+/* ============================================================
+   PAYMENT AMOUNT INPUT (pharmacy cashier hero input)
+   ============================================================ */
+.pay-input-wrap{
+  display:flex;align-items:baseline;background:var(--surface);border:2px solid var(--gold-300);
+  border-radius:var(--r-md);padding:8px 14px;transition:all var(--dur-fast);
+  box-shadow:0 0 0 0 rgba(154,117,54,0);
+}
+.pay-input-wrap:focus-within{border-color:var(--gold-500);box-shadow:0 0 0 4px rgba(154,117,54,.14)}
+.pay-input-wrap input{
+  border:none;outline:none;flex:1;font-size:22px;font-weight:700;
+  text-align:right;color:var(--primary-700);background:transparent;font-variant-numeric:tabular-nums;
+  min-width:0;width:100%;letter-spacing:-.01em;
+}
+.pay-input-wrap input::-webkit-outer-spin-button,
+.pay-input-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.pay-input-wrap .currency{font-size:11px;font-weight:700;color:var(--gold-600);text-transform:uppercase;letter-spacing:1px;margin-left:8px}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes loading{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* ============================================================
+   RESPONSIVE (tablet-first)
+   ============================================================ */
+@media(max-width:1280px){
+  .stats-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .main-content{padding:var(--s-6) var(--s-6) var(--s-8)}
+}
+@media(max-width:1024px){
+  :root{--sidebar-w:220px;--topbar-h:52px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .main-content{padding:var(--s-5)}
+  .page-header h1{font-size:var(--fs-2xl)}
+}
+@media(max-width:820px){
+  :root{--sidebar-w:64px}
+  .sidebar-header h2,.sidebar-header small,
+  .nav-item span,.sidebar-section-label,
+  .sidebar-footer .user-details,.logout-btn span{display:none}
+  .sidebar-header .brand{justify-content:center}
+  .nav-item{justify-content:center;padding:11px}
+  .nav-item.active::before{display:none}
+  .topbar{padding:0 var(--s-4)}
+  .topbar-user .info{display:none}
+  .main-content{padding:var(--s-4)}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .dossier-panel{width:100%;max-height:96vh}
+  .ai-panel{width:calc(100vw - 24px);right:12px}
+  .notif-panel{width:330px}
+  table{font-size:var(--fs-xs)}
+  th,td{padding:8px 10px}
+  .card{padding:var(--s-4)}
+  /* horizontal scroll for tables */
+  .card{overflow-x:auto}
+}
+@media(max-width:560px){
+  .stats-grid{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .layout{flex-direction:column}
+  .topbar{padding:0 var(--s-3)}
+  .topbar-clock{display:none}
+}
+
+/* Touch-friendly tap targets */
+@media(hover:none) and (pointer:coarse){
+  .btn{min-height:44px}
+  .nav-item{min-height:44px}
+  .tab{min-height:44px}
+  input,select,textarea{font-size:16px}
+}
+
+/* ============================================================
+   PRINT (financial reports, dossiers)
+   ============================================================ */
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  .sidebar,.topbar,.ai-fab,.ai-panel,.toast-container,.notif-bell,
+  .notif-panel,.btn,.tabs,.filter-bar,.dossier-tabs,
+  .dossier-header .close-x,.logout-btn{display:none !important}
+  .layout,.content-shell{display:block;height:auto;overflow:visible}
+  .main-content{padding:0;overflow:visible}
+  .card,.stat-card{break-inside:avoid;page-break-inside:avoid;box-shadow:none;border:1px solid #ccc;margin-bottom:12pt}
+  .dossier-overlay{position:static;background:#fff;backdrop-filter:none;padding:0}
+  .dossier-panel{box-shadow:none;max-height:none;width:100%}
+  .dossier-section{break-inside:avoid;border:1px solid #ddd;page-break-inside:avoid}
+  .dossier-header{background:#1a3c34 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  thead{display:table-header-group}
+  .print-only{display:block !important}
+  /* Print header with clinic identity */
+  .main-content::before{
+    content:"Clinique The Grace of God — Avenue Kola N°204, Ngiri-Ngiri, Kinshasa  •  Sauver des vies, gagner des âmes";
+    display:block;border-bottom:2px solid #1a3c34;padding:6pt 0;margin-bottom:12pt;
+    font-weight:700;font-size:9pt;color:#1a3c34;text-align:center;letter-spacing:.5pt;
+  }
+  @page{margin:1.5cm;size:A4}
+}
+.print-only{display:none}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo,createContext,useContext} = React;
+
+// ============ TOAST NOTIFICATION SYSTEM ============
+const ToastContext = createContext();
+function ToastProvider({children}){
+  const [toasts,setToasts]=useState([]);
+  const addToast=(message,type='success',duration=4000)=>{
+    const id=Date.now()+Math.random();
+    setToasts(prev=>[...prev,{id,message,type}]);
+    setTimeout(()=>setToasts(prev=>prev.filter(t=>t.id!==id)),duration);
+  };
+  const removeToast=(id)=>setToasts(prev=>prev.filter(t=>t.id!==id));
+  const toast={success:(msg)=>addToast(msg,'success'),error:(msg)=>addToast(msg,'error',6000),info:(msg)=>addToast(msg,'info'),warning:(msg)=>addToast(msg,'warning',5000)};
+  return React.createElement(ToastContext.Provider,{value:toast},
+    children,
+    React.createElement('div',{className:'toast-container'},
+      toasts.map(t=>React.createElement('div',{key:t.id,className:`toast ${t.type}`},
+        React.createElement('i',{className:`fas ${t.type==='success'?'fa-check-circle':t.type==='error'?'fa-exclamation-circle':t.type==='warning'?'fa-exclamation-triangle':'fa-info-circle'}`}),
+        React.createElement('span',null,t.message),
+        React.createElement('span',{className:'toast-close',onClick:()=>removeToast(t.id)},'×')
+      ))
+    )
+  );
+}
+function useToast(){return useContext(ToastContext);}
+
+// ============ SUPABASE CLIENT ============
+const SUPABASE_URL = 'https://fldfaxvsawfrkfkgdsod.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ZqVn8_fIn3tng_4hTfh8Lw_wwS_3pOc';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ============ STAFF DATABASE ============
+// Credentials from: Liste actualisée des agents.xlsx
+const STAFF_DB = [
+  // === DOCTEURS ===
+  {id:'S001',name:'Dr. Thierry Mukandila Kasongo',username:'mukandila',password:'Kason01@A',role:'doctor',dept:'Médecine',title:'Médecin / Directeur'},
+  {id:'S002',name:'Dr. Billy NSENDA ILUNGA',username:'ilunga',password:'Ilung02#B',role:'doctor',dept:'Médecine Générale',title:'Médecin'},
+  {id:'S003',name:'Dr Ifaso Lokela',username:'ifaso',password:'Ifaso04#D',role:'doctor',dept:'Médecine',title:'Médecin'},
+  {id:'S004',name:'Dr ABEDI SALUMU Teddy',username:'abedi',password:'Teddy06#F',role:'doctor',dept:'Médecine',title:'Médecin'},
+  // === ADMINISTRATION ===
+  {id:'S005',name:'Dr Muadi Ntumba Cyntyche',username:'muadi',password:'Cynty07@G',role:'admin',dept:'Administration',title:'Administrateur Général (AG)'},
+  {id:'S006',name:'Christianne MATONDO',username:'matondo',password:'Maton08#H',role:'admin',dept:'EXP & IT',title:'Responsable IT'},
+  // === INFIRMIERS / EXP ===
+  {id:'S007',name:'Jeannette MBUNGU TUMBA',username:'mbungu',password:'Tumba09@I',role:'nurse',dept:'Soins Infirmiers',title:'Infirmière (EXP)'},
+  {id:'S008',name:'MUJINGA N. Therese',username:'therese',password:'There10#J',role:'nurse',dept:'Soins Infirmiers',title:'Infirmière (EXP)'},
+  // === LABORATOIRE ===
+  {id:'S009',name:'Espoir KIMFUMU MASANGA',username:'masanga',password:'Masan11@K',role:'lab',dept:'Laboratoire',title:'Technicien Labo'},
+  {id:'S010',name:'Jeancy Kanana',username:'kanana',password:'Kanan12#L',role:'lab',dept:'Laboratoire',title:'Technicien Labo'},
+  {id:'S011',name:'Fabrice NDOMBE MAFUENI',username:'mafueni',password:'Mafen13@M',role:'lab',dept:'Laboratoire',title:'Technicien Labo'},
+  // === PHARMACIE ===
+  {id:'S012',name:'Eunice Kabedi Kabala',username:'kabala',password:'Kabal14#N',role:'pharmacy',dept:'Pharmacie',title:'Pharmacienne Chef'},
+  {id:'S013',name:'Nyunga Gypsy',username:'ntumba',password:'Ntumb15@O',role:'pharmacy',dept:'Pharmacie',title:'Pharmacienne'},
+  // === RÉCEPTION ===
+  {id:'S014',name:'Joelle MULUMBA B.',username:'mulumba',password:'Mulum16#P',role:'reception',dept:'Réception',title:'Réceptionniste'},
+  {id:'S015',name:'Micheline Wumba',username:'wumba',password:'Wumba17@Q',role:'reception',dept:'Réception',title:'Réceptionniste'},
+  {id:'S016',name:'Dorcas MWADI',username:'mwadi',password:'Mwadi18#R',role:'reception',dept:'Réception',title:'Réceptionniste'},
+  {id:'S017',name:'MUKWANGA ANNE',username:'mukwanga',password:'Annex19@S',role:'reception',dept:'Annexe',title:'Réceptionniste Annexe'},
+  {id:'S018',name:'Assia Lukuamu',username:'lukuamu',password:'Lukua20#T',role:'reception',dept:'Réception',title:'Réceptionniste'},
+  // === ADMIN TEST (Levi - accès total) ===
+  {id:'S000',name:'Levi',username:'levi',password:'admin',role:'superadmin',dept:'Direction',title:'Super Administrateur'},
+];
+
+// Staff without system credentials (display in directory only)
+const STAFF_NO_LOGIN = [
+  {id:'S019',name:'Lusakweno Giscard',dept:'Réception',title:'Réceptionniste'},
+  {id:'S020',name:'Dr Ndongala Bienheureuse',dept:'Médecine',title:'Médecin'},
+  {id:'S021',name:'Jack Matanda Salang',dept:'Sécurité',title:'Agent de Sécurité'},
+  {id:'S022',name:'Dadou BUEBUA KATUMBA',dept:'Sécurité',title:'Agent de Sécurité'},
+  {id:'S023',name:'Irène Mbuyi',dept:'Pharmacie',title:'Pharmacienne'},
+];
+
+// ============ CLINIC INFO ============
+const CLINIC = {
+  name:'Clinique The Grace of God',
+  slogan:'La Grâce de Dieu',
+  address:'Avenue Kola N°204, Ngiri-Ngiri, Kinshasa, RDC',
+  phone:'+243 815 000 000',
+  nif:'A2400000',
+  rccm:'CD/KIN/RCCM/24-B-00000',
+  director:'Dr. Mukandila',
+  facebook:'https://www.facebook.com/cliniquethegraceofgod',
+  tagline:'Sauver des vies, gagner des âmes',
+  logo:'logo.png',
+  services:['Médecine Générale','Maternité & CSU','Laboratoire','Pharmacie','Échographie','Pédiatrie']
+};
+
+// (Dead init functions removed — all data loaded from Supabase)
+
+// ============ HELPERS ============
+const fmt = (n) => new Intl.NumberFormat('fr-CD').format(n) + ' CDF';
+const genId = () => 'P' + Date.now().toString(36).toUpperCase();
+const STEPS = ['Réception','Pharmacie','Infirmier','Médecin','Pharmacie','Laboratoire','Pharmacie','Terminé'];
+const INSURANCE_TYPES = ['Régulier','CSU','Academia','AMC','Activa'];
+const SERVICES = ['Consultation','Examens/Médicaments','Résultats/Sortie','Échographie','Hospitalisation','Accouchement'];
+
+function getTimeGreeting(){
+  const h=new Date().getHours();
+  if(h<12)return'Bonjour';if(h<18)return'Bon après-midi';return'Bonsoir';
+}
+
+// ============ SHARED: EDIT PATIENT MODAL ============
+function EditPatientModal({patient,patients,setPatients,onClose}){
+  const toast=useToast();
+  const [saving,setSaving]=useState(false);
+  const [form,setForm]=useState({nom:patient.nom,prenom:patient.prenom,phone:patient.phone,email:patient.email||'',insurance:patient.insurance,sexe:patient.sexe,adresse:patient.adresse||'',langue:patient.langue||'Français',motif:patient.motif||''});
+  const save=async()=>{
+    if(!form.nom.trim()||!form.prenom.trim()){toast.error('Nom et prénom sont obligatoires.');return;}
+    setSaving(true);
+    try{
+      const {error}=await supabase.from('patients').update({
+        nom:form.nom.trim(),prenom:form.prenom.trim(),phone:form.phone.trim(),email:form.email.trim(),
+        insurance:form.insurance,sexe:form.sexe,adresse:form.adresse.trim(),langue:form.langue,motif:form.motif.trim()
+      }).eq('id',patient.id);
+      if(error) throw error;
+      setPatients(patients.map(p=>p.id===patient.id?{...p,...form}:p));
+      toast.success('Patient mis à jour');
+      onClose();
+    }catch(err){toast.error('Erreur: '+(err.message||'Connexion perdue'));}
+    setSaving(false);
+  };
+  return(<div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+    <div className="modal" style={{width:'560px'}}>
+      <h2><i className="fas fa-pen-to-square"></i> Modifier: {patient.nom} {patient.prenom}</h2>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
+        <div className="form-group"><label>Nom</label><input value={form.nom} onChange={e=>setForm({...form,nom:e.target.value})}/></div>
+        <div className="form-group"><label>Prénom</label><input value={form.prenom} onChange={e=>setForm({...form,prenom:e.target.value})}/></div>
+        <div className="form-group"><label>Téléphone</label><input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></div>
+        <div className="form-group"><label>Email</label><input value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></div>
+        <div className="form-group"><label>Assurance</label><select value={form.insurance} onChange={e=>setForm({...form,insurance:e.target.value})}>{INSURANCE_TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
+        <div className="form-group"><label>Sexe</label><select value={form.sexe} onChange={e=>setForm({...form,sexe:e.target.value})}><option value="M">M</option><option value="F">F</option></select></div>
+        <div className="form-group"><label>Adresse</label><input value={form.adresse} onChange={e=>setForm({...form,adresse:e.target.value})}/></div>
+        <div className="form-group"><label>Langue</label><select value={form.langue} onChange={e=>setForm({...form,langue:e.target.value})}><option>Français</option><option>Lingala</option><option>Kikongo</option><option>Swahili</option><option>Tshiluba</option></select></div>
+      </div>
+      <div className="form-group"><label>Motif de visite</label><input value={form.motif} onChange={e=>setForm({...form,motif:e.target.value})}/></div>
+      <div style={{display:'flex',gap:'10px',marginTop:'18px'}}>
+        <button className={`btn btn-success ${saving?'loading':''}`} onClick={save} disabled={saving}>{saving?<><i className="fas fa-spinner fa-spin"></i> Enregistrement...</>:<><i className="fas fa-save"></i> Enregistrer</>}</button>
+        <button className="btn btn-outline" onClick={onClose} disabled={saving}>Annuler</button>
+      </div>
+    </div>
+  </div>);
+}
+
+// ============ SHARED: PATIENT ACTIVITY FEED ============
+function PatientActivityFeed({patientId,payments,labOrders,prescriptions,limit}){
+  const pPay=(payments||[]).filter(p=>p.patientId===patientId);
+  const pLab=(labOrders||[]).filter(l=>l.patientId===patientId);
+  const pRx=(prescriptions||[]).filter(r=>r.patientId===patientId);
+  const all=[
+    ...pPay.map(p=>({t:'pay',date:p.date,text:`Paiement: ${fmt(p.amount)} — ${p.description}`,by:p.processedBy,icon:'fa-coins',color:'var(--gold)'})),
+    ...pLab.map(l=>({t:'lab',date:l.date,text:l.status==='completed'?`Labo terminé: ${l.description} → ${(l.results||'').substring(0,80)}`:`Labo demandé: ${l.description}`,by:l.status==='completed'?l.completedBy:l.orderedBy,icon:'fa-flask',color:'var(--info)'})),
+    ...pRx.map(r=>({t:'rx',date:r.date,text:`Rx: ${r.content}${r.dispensed?' ✓ dispensé':''}`,by:r.prescribedBy,icon:'fa-pills',color:'var(--warning)'})),
+  ].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,limit||5);
+  if(all.length===0) return null;
+  return(<div style={{marginTop:'8px',borderTop:'1px solid #eef0ee',paddingTop:'8px'}}>
+    <div style={{fontSize:'10px',fontWeight:700,color:'var(--text-light)',textTransform:'uppercase',letterSpacing:'.4px',marginBottom:'6px'}}>Activité récente</div>
+    {all.map((a,i)=><div key={i} style={{display:'flex',alignItems:'flex-start',gap:'8px',fontSize:'11.5px',padding:'3px 0',color:'var(--text)'}}>
+      <i className={`fas ${a.icon}`} style={{color:a.color,width:'12px',marginTop:'2px',fontSize:'10px'}}></i>
+      <div style={{flex:1}}><span>{a.text}</span> <span style={{color:'var(--text-light)',fontSize:'10px'}}>— {a.by}, {new Date(a.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    </div>)}
+  </div>);
+}
+
+// ============ MAIN APP ============
+function App(){
+  const toast = useToast();
+  const [user,setUser] = useState(null);
+  const [patients,setPatients] = useState([]);
+  const [inventory,setInventory] = useState([]);
+  const [payments,setPayments] = useState([]);
+  const [labOrders,setLabOrders] = useState([]);
+  const [confidentialNotes,setConfidentialNotes] = useState([]);
+  const [prescriptions,setPrescriptions] = useState([]);
+  const [notifications,setNotifications] = useState([]);
+  const [onlineStaff,setOnlineStaff] = useState([]);
+  const [loading,setLoading] = useState(false);
+  const [sessionTimeout,setSessionTimeout] = useState(null);
+
+  const [activePortal,setActivePortal] = useState(null);
+
+  // Session timeout: auto-logout after 8 hours of inactivity
+  const resetSessionTimer = useCallback(()=>{
+    if(sessionTimeout) clearTimeout(sessionTimeout);
+    const t = setTimeout(()=>{
+      if(user){ toast.warning('Session expirée. Reconnexion requise.'); setUser(null); window.location.reload(); }
+    }, 8*60*60*1000);
+    setSessionTimeout(t);
+  },[user]);
+  useEffect(()=>{
+    if(!user) return;
+    resetSessionTimer();
+    const events=['mousedown','keydown','scroll','touchstart'];
+    events.forEach(e=>window.addEventListener(e,resetSessionTimer));
+    return()=>events.forEach(e=>window.removeEventListener(e,resetSessionTimer));
+  },[user]);
+
+  // Helper to create a notification and persist to Supabase
+  const addNotification = async(notif) => {
+    const n = { id: 'NOTIF' + Date.now(), ...notif, createdAt: new Date().toISOString(), read: false };
+    try {
+      await supabase.from('notifications').insert({
+        id: n.id, type: n.type, message: n.message, patient_id: n.patientId, patient_name: n.patientName,
+        for_doctor_id: n.forDoctorId, for_doctor_name: n.forDoctorName, from_user: n.fromUser,
+        created_at: n.createdAt, read: false
+      });
+    } catch(e) { console.log('Notification insert skipped:', e); }
+    setNotifications(prev => [n, ...prev]);
+  };
+
+  // Load data from Supabase when user authenticates — must be before any early returns (React hooks rule)
+  useEffect(() => {
+    if (!user) return;
+    async function loadData() {
+      setLoading(true);
+      try {
+        // Load patients with their latest vitals
+        const { data: pData } = await supabase.from('patients').select('*').order('registered_at', { ascending: false });
+        if (pData) {
+          const patientsWithVitals = await Promise.all(pData.map(async (p) => {
+            const { data: vData } = await supabase.from('vitals').select('*').eq('patient_id', p.id).order('recorded_at', { ascending: false }).limit(1);
+            const vitals = vData && vData.length > 0 ? vData[0] : null;
+            return {
+              ...p,
+              registeredAt: p.registered_at,
+              registeredBy: p.registered_by,
+              stepLabel: p.step_label,
+              isNew: p.is_new,
+              doctorId: p.doctor_id || null,
+              doctorName: p.doctor_name || null,
+              vitals: vitals ? { temp: vitals.temp, tension: vitals.tension, poids: vitals.poids, taille: vitals.taille, pouls: vitals.pouls, spo2: vitals.spo2, triage: vitals.triage } : null,
+              payments: [],
+              labResults: [],
+              prescriptions: []
+            };
+          }));
+          setPatients(patientsWithVitals);
+        }
+
+        // Load payments
+        const { data: payData } = await supabase.from('payments').select('*').order('date', { ascending: false });
+        if (payData) setPayments(payData.map(p => ({ ...p, patientId: p.patient_id, patientName: p.patient_name, processedBy: p.processed_by })));
+
+        // Load lab orders
+        const { data: labData } = await supabase.from('lab_orders').select('*').order('date', { ascending: false });
+        if (labData) setLabOrders(labData.map(l => ({ ...l, patientId: l.patient_id, patientName: l.patient_name, orderedBy: l.ordered_by, completedAt: l.completed_at, completedBy: l.completed_by })));
+
+        // Load prescriptions
+        const { data: rxData } = await supabase.from('prescriptions').select('*').order('date', { ascending: false });
+        if (rxData) setPrescriptions(rxData.map(r => ({ ...r, patientId: r.patient_id, patientName: r.patient_name, prescribedBy: r.prescribed_by, dispensedAt: r.dispensed_at })));
+
+        // Load confidential notes
+        const { data: noteData } = await supabase.from('confidential_notes').select('*').order('date', { ascending: false });
+        if (noteData) setConfidentialNotes(noteData.map(n => ({ ...n, patientId: n.patient_id, patientName: n.patient_name, doctorId: n.doctor_id, doctorName: n.doctor_name })));
+
+        // Load inventory
+        const { data: invData } = await supabase.from('inventory').select('*').order('name');
+        if (invData) setInventory(invData.map(m => ({ ...m, minStock: m.min_stock, lastRestock: m.last_restock })));
+
+        // Load notifications
+        try {
+          const { data: notifData } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(50);
+          if (notifData) setNotifications(notifData.map(n => ({ ...n, patientId: n.patient_id, patientName: n.patient_name, forDoctorId: n.for_doctor_id, forDoctorName: n.for_doctor_name, fromUser: n.from_user, createdAt: n.created_at })));
+        } catch(e) { console.log('Notifications table not yet created:', e); }
+
+      } catch (err) {
+        console.error('Error loading data:', err);
+        toast.error('Erreur de chargement des données. Vérifiez votre connexion internet.');
+      }
+      setLoading(false);
+    }
+    loadData();
+
+    // ===== REAL-TIME SUBSCRIPTIONS (multi-device sync) =====
+    const mapPatient = (p) => ({ ...p, registeredAt: p.registered_at, registeredBy: p.registered_by, stepLabel: p.step_label, isNew: p.is_new, doctorId: p.doctor_id||null, doctorName: p.doctor_name||null, vitals: null, payments: [], labResults: [], prescriptions: [] });
+    const mapPayment = (p) => ({ ...p, patientId: p.patient_id, patientName: p.patient_name, processedBy: p.processed_by });
+    const mapLab = (l) => ({ ...l, patientId: l.patient_id, patientName: l.patient_name, orderedBy: l.ordered_by, completedAt: l.completed_at, completedBy: l.completed_by });
+    const mapRx = (r) => ({ ...r, patientId: r.patient_id, patientName: r.patient_name, prescribedBy: r.prescribed_by, dispensedAt: r.dispensed_at });
+    const mapNotif = (n) => ({ ...n, patientId: n.patient_id, patientName: n.patient_name, forDoctorId: n.for_doctor_id, forDoctorName: n.for_doctor_name, fromUser: n.from_user, createdAt: n.created_at });
+
+    const channel = supabase.channel('crm-realtime')
+      // Patients: INSERT and UPDATE
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'patients' }, (payload) => {
+        const p = mapPatient(payload.new);
+        setPatients(prev => prev.some(x=>x.id===p.id) ? prev : [p, ...prev]);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'patients' }, (payload) => {
+        const p = payload.new;
+        setPatients(prev => prev.map(x => x.id===p.id ? { ...x, step: p.step, stepLabel: p.step_label, insurance: p.insurance, diagnosis: p.diagnosis, isNew: p.is_new, doctorId: p.doctor_id||null, doctorName: p.doctor_name||null, nom: p.nom, prenom: p.prenom, phone: p.phone, email: p.email, adresse: p.adresse, langue: p.langue, sexe: p.sexe } : x));
+      })
+      // Payments
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'payments' }, (payload) => {
+        const p = mapPayment(payload.new);
+        setPayments(prev => prev.some(x=>x.id===p.id) ? prev : [p, ...prev]);
+      })
+      // Lab orders
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'lab_orders' }, (payload) => {
+        const l = mapLab(payload.new);
+        setLabOrders(prev => prev.some(x=>x.id===l.id) ? prev : [l, ...prev]);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'lab_orders' }, (payload) => {
+        const l = mapLab(payload.new);
+        setLabOrders(prev => prev.map(x => x.id===l.id ? l : x));
+      })
+      // Prescriptions
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prescriptions' }, (payload) => {
+        const r = mapRx(payload.new);
+        setPrescriptions(prev => prev.some(x=>x.id===r.id) ? prev : [r, ...prev]);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'prescriptions' }, (payload) => {
+        const r = mapRx(payload.new);
+        setPrescriptions(prev => prev.map(x => x.id===r.id ? r : x));
+      })
+      // Confidential notes
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'confidential_notes' }, (payload) => {
+        const n = { ...payload.new, patientId: payload.new.patient_id, patientName: payload.new.patient_name, doctorId: payload.new.doctor_id, doctorName: payload.new.doctor_name };
+        setConfidentialNotes(prev => prev.some(x=>x.id===n.id) ? prev : [...prev, n]);
+      })
+      // Notifications
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, (payload) => {
+        const n = mapNotif(payload.new);
+        setNotifications(prev => prev.some(x=>x.id===n.id) ? prev : [n, ...prev]);
+      })
+      // Inventory
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'inventory' }, (payload) => {
+        const m = { ...payload.new, minStock: payload.new.min_stock, lastRestock: payload.new.last_restock };
+        setInventory(prev => prev.map(x => x.id===m.id ? m : x));
+      })
+      // Vitals (reload patient vitals on new insert)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vitals' }, (payload) => {
+        const v = payload.new;
+        setPatients(prev => prev.map(p => p.id===v.patient_id ? { ...p, vitals: { temp: v.temp, tension: v.tension, poids: v.poids, taille: v.taille, pouls: v.pouls, spo2: v.spo2, triage: v.triage } } : p));
+      })
+      .subscribe();
+
+    // ===== PRESENCE CHANNEL (online/offline staff tracking) =====
+    const presenceChannel = supabase.channel('online-staff', { config: { presence: { key: user.id } } });
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        const online = [];
+        Object.keys(state).forEach(key => {
+          state[key].forEach(p => { if(p.staffId) online.push(p.staffId); });
+        });
+        setOnlineStaff([...new Set(online)]);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ staffId: user.id, name: user.name, role: user.role, joinedAt: new Date().toISOString() });
+        }
+      });
+
+    // Untrack on tab close / beforeunload
+    const handleUnload = () => { presenceChannel.untrack(); };
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      presenceChannel.untrack();
+      supabase.removeChannel(presenceChannel);
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  if(!user) return <LoginPage onLogin={(u)=>{setUser(u);setActivePortal(u.role==='superadmin'?'admin':u.role);}}/>;
+
+  if (loading) return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#f4f5f7',flexDirection:'column',gap:'16px'}}>
+      <img src={CLINIC.logo} alt="Logo" style={{width:'80px',height:'auto'}} onError={(e)=>{e.target.style.display='none'}}/>
+      <div style={{fontSize:'14px',color:'#1a3c34',fontWeight:600}}>Chargement des données...</div>
+      <div style={{width:'200px',height:'4px',background:'#e0e4e2',borderRadius:'2px',overflow:'hidden'}}>
+        <div style={{width:'60%',height:'100%',background:'#2e7d5b',borderRadius:'2px',animation:'loading 1.5s ease-in-out infinite'}}></div>
+      </div>
+    </div>
+  );
+
+  const allStaff=[...STAFF_DB,...STAFF_NO_LOGIN];
+  const isSuperAdmin=user.role==='superadmin';
+  const effectiveRole=isSuperAdmin?(activePortal||'admin'):user.role;
+  const props={user:{...user,role:effectiveRole,isSuperAdmin},patients,setPatients,inventory,setInventory,payments,setPayments,labOrders,setLabOrders,confidentialNotes,setConfidentialNotes,prescriptions,setPrescriptions,notifications,setNotifications,addNotification,toast};
+
+  const portal={
+    reception:<FrontDeskView {...props}/>,
+    nurse:<NurseView {...props}/>,
+    doctor:<DoctorView {...props}/>,
+    lab:<LabView {...props}/>,
+    pharmacy:<PharmacyView {...props}/>,
+    admin:<AdminView {...props} staff={allStaff} onlineStaff={onlineStaff}/>,
+  };
+
+  const currentView=activePortal||user.role;
+
+  return(<div>
+    {user.role==='superadmin'&&<div style={{position:'fixed',top:0,left:0,right:0,zIndex:1001,background:'linear-gradient(135deg,#7c3aed,#a855f7)',padding:'6px 20px',display:'flex',alignItems:'center',gap:'12px',boxShadow:'0 2px 12px rgba(124,58,237,.3)'}}>
+      <span style={{color:'#fff',fontSize:'11px',fontWeight:700,letterSpacing:'.5px'}}><i className="fas fa-shield-halved"></i> SUPER ADMIN — ACCÈS TOTAL</span>
+      <div style={{display:'flex',gap:'4px',marginLeft:'auto'}}>
+        {[{id:'admin',label:'Admin',icon:'fa-chart-pie'},{id:'reception',label:'Réception',icon:'fa-door-open'},{id:'pharmacy',label:'Pharmacie',icon:'fa-pills'},{id:'nurse',label:'Infirmier',icon:'fa-heartbeat'},{id:'doctor',label:'Médecin',icon:'fa-stethoscope'},{id:'lab',label:'Labo',icon:'fa-flask'}].map(p=>(
+          <button key={p.id} onClick={()=>setActivePortal(p.id)} style={{padding:'4px 12px',borderRadius:'6px',border:'none',cursor:'pointer',fontSize:'11px',fontWeight:600,background:currentView===p.id?'#fff':'rgba(255,255,255,.15)',color:currentView===p.id?'#7c3aed':'#fff',transition:'all .15s',display:'flex',alignItems:'center',gap:'5px'}}>
+            <i className={`fas ${p.icon}`} style={{fontSize:'10px'}}></i>{p.label}
+          </button>
+        ))}
+      </div>
+    </div>}
+    <div style={user.role==='superadmin'?{paddingTop:'38px',height:'100vh'}:{}}>
+      {portal[currentView]||portal.admin}
+    </div>
+    <AIAssistant user={user}/>
+  </div>);
+}
+
+// ============ LOGIN ============
+function LoginPage({onLogin}){
+  const [username,setUsername]=useState('');
+  const [password,setPassword]=useState('');
+  const [error,setError]=useState('');
+  const [loading,setLoading]=useState(false);
+
+  const handleLogin=(e)=>{
+    e.preventDefault();setLoading(true);setError('');
+    setTimeout(()=>{
+      const uname=username.toLowerCase().trim();
+      const pwd=password.trim();
+      const foundUser=STAFF_DB.find(s=>s.username===uname);
+      if(!foundUser){setError('Identifiant "'+uname+'" introuvable. Vérifiez votre nom d\'utilisateur.');setLoading(false);return;}
+      if(foundUser.password!==pwd){setError('Mot de passe incorrect pour '+foundUser.name+'. Veuillez réessayer.');setLoading(false);return;}
+      onLogin(foundUser);
+    },600);
+  };
+
+  return(<div className="login-page">
+    <div className="login-card" role="dialog" aria-labelledby="login-title">
+      <div className="logo-area">
+        <div className="logo-fallback" aria-hidden="true"><i className="fas fa-cross"></i></div>
+        <div id="login-title" className="clinic-name">{CLINIC.name}</div>
+        <div className="clinic-sub">{CLINIC.tagline}</div>
+        <div className="clinic-addr"><i className="fas fa-map-marker-alt" aria-hidden="true"></i> Ngiri-Ngiri, Kinshasa</div>
+      </div>
+      <p style={{fontSize:'12px',color:'var(--text-light)',marginBottom:'22px',textAlign:'center',fontWeight:500}}>Accès réservé au personnel autorisé</p>
+      <form onSubmit={handleLogin}>
+        <div className="form-group">
+          <label htmlFor="login-user"><i className="fas fa-user" style={{fontSize:'10px'}}></i> Identifiant</label>
+          <input id="login-user" value={username} onChange={e=>setUsername(e.target.value)} placeholder="Nom d'utilisateur" autoFocus autoComplete="username"/>
+        </div>
+        <div className="form-group">
+          <label htmlFor="login-pwd"><i className="fas fa-lock" style={{fontSize:'10px'}}></i> Mot de passe</label>
+          <input id="login-pwd" type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"/>
+        </div>
+        {error&&<div role="alert" style={{color:'var(--danger-700)',fontSize:'12.5px',marginBottom:'16px',padding:'10px 14px',background:'var(--danger-50)',borderRadius:'var(--r-md)',border:'1px solid var(--danger-100)',display:'flex',alignItems:'flex-start',gap:'8px'}}><i className="fas fa-exclamation-circle" style={{marginTop:'2px',color:'var(--danger-500)'}}></i><span>{error}</span></div>}
+        <button className={`btn btn-primary btn-block btn-lg ${loading?'loading':''}`} type="submit" disabled={loading}>
+          {loading?<><i className="fas fa-spinner fa-spin"></i> Connexion...</>:<><i className="fas fa-arrow-right-to-bracket"></i> Se connecter</>}
+        </button>
+      </form>
+      <div style={{textAlign:'center',marginTop:'24px',paddingTop:'18px',borderTop:'1px solid var(--border-subtle)',fontSize:'10.5px',color:'var(--text-muted)',lineHeight:1.8}}>
+        <div style={{fontWeight:600,color:'var(--text-light)'}}>{CLINIC.name}</div>
+        <div>Système de Gestion Hospitalière — v2.0</div>
+        <a href={CLINIC.facebook} target="_blank" rel="noopener" style={{color:'var(--primary-500)',textDecoration:'none',fontSize:'10.5px',fontWeight:500,display:'inline-flex',alignItems:'center',gap:'4px',marginTop:'4px'}}><i className="fab fa-facebook" aria-hidden="true"></i> Page Facebook</a>
+      </div>
+    </div>
+  </div>);
+}
+
+// ============ HELPERS: INITIALS, INSURANCE COLOR ============
+function getInitials(name){return (name||'').split(' ').filter(Boolean).map(n=>n[0]).slice(0,2).join('').toUpperCase();}
+function insuranceClass(t){return ({'Régulier':'ins-regulier','CSU':'ins-csu','Academia':'ins-academia','AMC':'ins-amc','Activa':'ins-activa'})[t]||'ins-regulier';}
+function PatientAvatar({patient,size}){
+  const cls=patient.sexe==='F'?'female':patient.sexe==='M'?'male':'unk';
+  return <div className={`p-avatar ${cls} ${size||''}`} aria-hidden="true">{getInitials(patient.nom+' '+patient.prenom)}</div>;
+}
+function TopbarClock(){
+  const [now,setNow]=useState(new Date());
+  useEffect(()=>{const t=setInterval(()=>setNow(new Date()),30000);return()=>clearInterval(t);},[]);
+  return(<div className="topbar-clock" aria-label="Heure actuelle">
+    <span className="dot"></span>
+    <span>{now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>
+    <span style={{opacity:.5}}>·</span>
+    <span>{now.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</span>
+  </div>);
+}
+
+// ============ SIDEBAR WRAPPER ============
+function DashLayout({user,tabs,activeTab,setActiveTab,children,topbarRight}){
+  const activeT = tabs.find(t=>t.id===activeTab) || tabs[0] || {label:''};
+  const deptLabels={reception:'Réception',pharmacy:'Pharmacie / Caisse',nurse:'Soins Infirmiers',doctor:'Médecine',lab:'Laboratoire',admin:'Administration',superadmin:'Super Admin'};
+  const portalName=deptLabels[user.role]||user.dept||'';
+  return(<div className="layout">
+    <nav className="sidebar" role="navigation" aria-label="Navigation principale">
+      <div className="sidebar-header">
+        <div className="brand">
+          <div className="brand-icon" aria-hidden="true"><i className="fas fa-cross"></i></div>
+          <div><h2>Grace of God</h2><small>Clinique CRM</small></div>
+        </div>
+      </div>
+      <div className="sidebar-section-label">Navigation</div>
+      <div className="sidebar-nav" role="menubar">
+        {tabs.map(t=>(
+          <div key={t.id} role="menuitem" aria-current={activeTab===t.id?'page':undefined} tabIndex={0}
+               className={`nav-item ${activeTab===t.id?'active':''}`}
+               onClick={()=>setActiveTab(t.id)}
+               onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setActiveTab(t.id);}}}>
+            <i className={t.icon} aria-hidden="true"></i><span>{t.label}</span>
+            {t.count>0&&<span className="nav-badge" aria-label={`${t.count} éléments`}>{t.count}</span>}
+          </div>
+        ))}
+      </div>
+      <div className="sidebar-footer">
+        <div className="user-info">
+          <div className="avatar" aria-hidden="true">{getInitials(user.name)}</div>
+          <div className="user-details"><div className="name" title={user.name}>{user.name}</div><div className="role" title={user.title}>{user.title}</div></div>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:'6px',marginTop:'8px',fontSize:'9.5px',color:'rgba(255,255,255,.4)',fontWeight:600,letterSpacing:'.5px'}}>
+          <div style={{width:'6px',height:'6px',borderRadius:'50%',background:'#3ecf8e',boxShadow:'0 0 6px rgba(62,207,142,.6)'}}></div> SYNC EN LIGNE
+        </div>
+        <div className="logout-btn" role="button" tabIndex={0} aria-label="Se déconnecter" onClick={()=>{if(confirm('Voulez-vous vous déconnecter?'))window.location.reload();}}><i className="fas fa-sign-out-alt" aria-hidden="true"></i> <span>Déconnexion</span></div>
+      </div>
+    </nav>
+    <div className="content-shell">
+      <header className="topbar" role="banner">
+        <div className="topbar-title">
+          <div className="crumb">{portalName}</div>
+          <div className="title">{activeT.label||CLINIC.name}</div>
+        </div>
+        <div className="topbar-spacer"></div>
+        <TopbarClock/>
+        {topbarRight}
+        <div className="topbar-user" aria-label={`Connecté: ${user.name}`}>
+          <div className="avatar-circle" aria-hidden="true">{getInitials(user.name)}</div>
+          <div className="info">
+            <div className="nm">{user.name.split(' ').slice(0,2).join(' ')}</div>
+            <div className="rl">{user.title}</div>
+          </div>
+        </div>
+      </header>
+      <main className="main-content" role="main">{children}</main>
+    </div>
+  </div>);
+}
+
+// ============ FRONT DESK ============
+function FrontDeskView({user,patients,setPatients,toast}){
+  const [tab,setTab]=useState('register');
+  const [form,setForm]=useState({nom:'',prenom:'',phone:'',email:'',sexe:'M',dob:'',langue:'Français',adresse:'',motif:''});
+  const [saving,setSaving]=useState(false);
+  const todayPatients=patients.filter(p=>new Date(p.registeredAt).toDateString()===new Date().toDateString());
+
+  const registerPatient=async(e)=>{
+    e.preventDefault();
+    if(!form.nom.trim()||!form.prenom.trim()||!form.phone.trim()){toast.error('Veuillez remplir le nom, prénom et téléphone.');return;}
+    setSaving(true);
+    try{
+      const newP={id:genId(),nom:form.nom.trim(),prenom:form.prenom.trim(),phone:form.phone.trim(),email:form.email.trim(),sexe:form.sexe,dob:form.dob,langue:form.langue,adresse:form.adresse.trim(),motif:form.motif.trim(),insurance:'Régulier',step:1,stepLabel:'Pharmacie (Consultation)',registeredAt:new Date().toISOString(),registeredBy:user.name,vitals:null,isNew:true,payments:[],labResults:[],prescriptions:[]};
+      const {error}=await supabase.from('patients').insert({
+        id: newP.id, nom: newP.nom, prenom: newP.prenom, phone: newP.phone, email: newP.email,
+        sexe: newP.sexe, dob: newP.dob || null, langue: newP.langue, adresse: newP.adresse, motif: newP.motif,
+        insurance: 'Régulier', step: 1, step_label: 'Pharmacie (Consultation)',
+        registered_at: newP.registeredAt, registered_by: user.name, is_new: true
+      });
+      if(error) throw error;
+      setPatients([newP,...patients]);
+      setForm({nom:'',prenom:'',phone:'',email:'',sexe:'M',dob:'',langue:'Français',adresse:'',motif:''});
+      toast.success(`${newP.nom} ${newP.prenom} enregistré → Pharmacie`);
+    }catch(err){toast.error('Erreur d\'enregistrement: '+(err.message||'Vérifiez votre connexion'));}
+    setSaving(false);
+  };
+
+  const tabs=[
+    {id:'register',icon:'fas fa-user-plus',label:'Nouveau Patient'},
+    {id:'list',icon:'fas fa-clipboard-list',label:'Patients du Jour',count:todayPatients.length},
+    {id:'search',icon:'fas fa-search',label:'Rechercher'},
+  ];
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {tab==='register'&&(<div>
+      <div className="page-header"><div><h1>Enregistrement Patient</h1><p>Enregistrez le patient puis dirigez-le vers la pharmacie pour le paiement de consultation</p></div></div>
+      <div className="card">
+        <form onSubmit={registerPatient}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            <div className="form-group"><label>Nom de famille *</label><input required value={form.nom} onChange={e=>setForm({...form,nom:e.target.value})} placeholder="MBALA"/></div>
+            <div className="form-group"><label>Prénom *</label><input required value={form.prenom} onChange={e=>setForm({...form,prenom:e.target.value})} placeholder="Jean-Pierre"/></div>
+            <div className="form-group"><label>Téléphone *</label><input required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+243 8XX XXX XXX"/></div>
+            <div className="form-group"><label>Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="optionnel"/></div>
+            <div className="form-group"><label>Sexe</label><select value={form.sexe} onChange={e=>setForm({...form,sexe:e.target.value})}><option value="M">Masculin</option><option value="F">Féminin</option></select></div>
+            <div className="form-group"><label>Date de naissance</label><input type="date" value={form.dob} onChange={e=>setForm({...form,dob:e.target.value})}/></div>
+            <div className="form-group"><label>Langue préférée</label><select value={form.langue} onChange={e=>setForm({...form,langue:e.target.value})}><option>Français</option><option>Lingala</option><option>Kikongo</option><option>Swahili</option><option>Tshiluba</option></select></div>
+            <div className="form-group"><label>Adresse / Quartier</label><input value={form.adresse} onChange={e=>setForm({...form,adresse:e.target.value})} placeholder="Quartier, Commune"/></div>
+          </div>
+          <div className="form-group" style={{marginTop:'8px'}}><label>Motif de visite</label><input value={form.motif} onChange={e=>setForm({...form,motif:e.target.value})} placeholder="Ex: Fièvre, consultation prénatale, douleurs..."/></div>
+          <div style={{display:'flex',gap:'12px',marginTop:'20px'}}>
+            <button className={`btn btn-primary btn-lg ${saving?'loading':''}`} type="submit" disabled={saving}>{saving?<><i className="fas fa-spinner fa-spin"></i> Enregistrement...</>:<><i className="fas fa-check-circle"></i> Enregistrer & Envoyer → Pharmacie</>}</button>
+          </div>
+        </form>
+      </div>
+    </div>)}
+    {tab==='list'&&(<div>
+      <div className="page-header"><div><h1>Patients du Jour</h1><p>{todayPatients.length} patient(s) enregistré(s) aujourd'hui</p></div></div>
+      <div className="card">
+        <table><thead><tr><th>ID</th><th>Patient</th><th>Tél.</th><th>Étape Actuelle</th><th>Assurance</th><th>Heure</th><th>Par</th></tr></thead>
+        <tbody>{todayPatients.map(p=><tr key={p.id}>
+          <td style={{fontFamily:'monospace',fontSize:'11px'}}>{p.id}</td>
+          <td><strong>{p.nom} {p.prenom}</strong> {p.isNew&&<span className="badge badge-new">NOUVEAU</span>}</td>
+          <td>{p.phone}</td>
+          <td><span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span></td>
+          <td><span className="badge badge-gold">{p.insurance}</span></td>
+          <td>{new Date(p.registeredAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</td>
+          <td style={{fontSize:'11px'}}>{p.registeredBy}</td>
+        </tr>)}</tbody></table>
+        {todayPatients.length===0&&<p style={{textAlign:'center',padding:'40px',color:'var(--text-light)'}}>Aucun patient enregistré aujourd'hui</p>}
+      </div>
+    </div>)}
+    {tab==='search'&&<PatientSearch patients={patients}/>}
+  </DashLayout>);
+}
+
+function PatientSearch({patients}){
+  const [q,setQ]=useState('');
+  const results=q.length>=2?patients.filter(p=>`${p.nom} ${p.prenom} ${p.phone} ${p.id}`.toLowerCase().includes(q.toLowerCase())):[];
+  return(<div>
+    <div className="page-header"><div><h1>Recherche Patient</h1></div></div>
+    <div className="card">
+      <div className="form-group"><label>Rechercher par nom, prénom, téléphone ou ID</label><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Tapez au moins 2 caractères..." style={{fontSize:'16px',padding:'14px'}}/></div>
+      {results.length>0&&<table><thead><tr><th>ID</th><th>Nom</th><th>Téléphone</th><th>Assurance</th><th>Dernière visite</th></tr></thead><tbody>
+      {results.map(p=><tr key={p.id}><td>{p.id}</td><td>{p.nom} {p.prenom}</td><td>{p.phone}</td><td><span className="badge badge-gold">{p.insurance}</span></td><td>{new Date(p.registeredAt).toLocaleDateString('fr-FR')}</td></tr>)}
+      </tbody></table>}
+      {q.length>=2&&results.length===0&&<p style={{color:'var(--text-light)',padding:'20px',textAlign:'center'}}>Aucun résultat</p>}
+    </div>
+  </div>);
+}
+
+// ============ NURSE VIEW ============
+function NurseView({user,patients,setPatients,toast}){
+  const [tab,setTab]=useState('queue');
+  const myPatients=patients.filter(p=>p.step===2);
+
+  const saveVitals=async(pid,vitals)=>{
+    if(!vitals.temp||!vitals.tension){toast.error('Température et tension sont obligatoires.');return;}
+    try{
+      const {error}=await supabase.from('vitals').insert({
+        patient_id: pid, temp: vitals.temp, tension: vitals.tension, poids: vitals.poids,
+        taille: vitals.taille, pouls: vitals.pouls, spo2: vitals.spo2, triage: vitals.triage,
+        recorded_by: user.name
+      });
+      if(error) throw error;
+      await supabase.from('patients').update({ step: 3, step_label: 'Médecin', is_new: false }).eq('id', pid);
+      setPatients(patients.map(p=>p.id===pid?{...p,vitals,step:3,stepLabel:'Médecin',isNew:false}:p));
+      toast.success('Vitaux enregistrés → Médecin');
+    }catch(err){toast.error('Erreur: '+(err.message||'Connexion perdue'));}
+  };
+
+  const tabs=[
+    {id:'queue',icon:'fas fa-heartbeat',label:'File d\'attente',count:myPatients.length},
+    {id:'all',icon:'fas fa-users',label:'Vue Globale'},
+  ];
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {tab==='queue'&&(<div>
+      <div className="page-header"><div><h1>Prise des Vitaux</h1><p>{myPatients.length} patient(s) en attente</p></div></div>
+      {myPatients.length===0&&<div className="card" style={{textAlign:'center',padding:'30px'}}><p style={{color:'var(--text-light)',fontSize:'16px'}}>Aucun patient en attente</p></div>}
+      {myPatients.map(p=><VitalsCard key={p.id} patient={p} onSave={saveVitals}/>)}
+    </div>)}
+    {tab==='all'&&(<div>
+      <div className="page-header"><div><h1>Vue Globale Patients</h1></div></div>
+      <div className="card"><table><thead><tr><th>Patient</th><th>Étape</th><th>Triage</th><th>Vitaux</th></tr></thead><tbody>
+      {patients.map(p=><tr key={p.id}><td><strong>{p.nom} {p.prenom}</strong></td><td><span className="badge badge-blue">{p.stepLabel}</span></td><td>{p.vitals&&p.vitals.triage?<span className={`badge ${(p.vitals.triage||'').includes('Rouge')?'badge-red':(p.vitals.triage||'').includes('Orange')?'badge-yellow':'badge-green'}`}>{(p.vitals.triage||'').split(' ')[0]}</span>:'—'}</td><td style={{fontSize:'12px'}}>{p.vitals?`${p.vitals.temp||'—'}°C | TA:${p.vitals.tension||'—'} | SpO2:${p.vitals.spo2||'—'}%`:'En attente'}</td></tr>)}
+      </tbody></table></div>
+    </div>)}
+  </DashLayout>);
+}
+
+function VitalsCard({patient,onSave}){
+  const [v,setV]=useState({temp:'',tension:'',poids:'',taille:'',pouls:'',spo2:'',triage:'Vert - Standard'});
+  return(<div className="card">
+    <div className="card-header">
+      <div className="p-headline">
+        <PatientAvatar patient={patient}/>
+        <div>
+          <div className="p-name">{patient.nom} {patient.prenom}</div>
+          <div className="p-meta">{patient.sexe==='M'?'Masculin':'Féminin'} <span style={{opacity:.4}}>·</span> <i className="fas fa-hashtag" style={{fontSize:'9px',opacity:.5}}></i>{patient.id}</div>
+        </div>
+      </div>
+      <span className={`badge ${insuranceClass(patient.insurance)}`}><i className="fas fa-shield-halved" style={{fontSize:'9px'}}></i> {patient.insurance}</span>
+    </div>
+    {patient.motif&&<p style={{fontSize:'12.5px',color:'var(--text)',marginBottom:'16px',padding:'10px 14px',background:'var(--primary-50)',borderRadius:'var(--r-md)',borderLeft:'3px solid var(--primary-500)'}}><i className="fas fa-comment-medical" style={{color:'var(--primary-500)',marginRight:'6px'}}></i> <strong>Motif :</strong> {patient.motif}</p>}
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'14px'}}>
+      <div className="form-group"><label><i className="fas fa-thermometer-half"></i> Température (°C)</label><input value={v.temp} onChange={e=>setV({...v,temp:e.target.value})} placeholder="36.5"/></div>
+      <div className="form-group"><label><i className="fas fa-heart"></i> Tension</label><input value={v.tension} onChange={e=>setV({...v,tension:e.target.value})} placeholder="120/80"/></div>
+      <div className="form-group"><label><i className="fas fa-weight-scale"></i> Poids (kg)</label><input value={v.poids} onChange={e=>setV({...v,poids:e.target.value})} placeholder="70"/></div>
+      <div className="form-group"><label><i className="fas fa-ruler-vertical"></i> Taille (cm)</label><input value={v.taille} onChange={e=>setV({...v,taille:e.target.value})} placeholder="170"/></div>
+      <div className="form-group"><label><i className="fas fa-wave-square"></i> Pouls (bpm)</label><input value={v.pouls} onChange={e=>setV({...v,pouls:e.target.value})} placeholder="72"/></div>
+      <div className="form-group"><label><i className="fas fa-lungs"></i> SpO₂ (%)</label><input value={v.spo2} onChange={e=>setV({...v,spo2:e.target.value})} placeholder="98"/></div>
+    </div>
+    <div className="form-group"><label><i className="fas fa-tag"></i> Classification Triage</label>
+      <select value={v.triage} onChange={e=>setV({...v,triage:e.target.value})} style={{fontWeight:600}}>
+        <option>Rouge - Urgence vitale</option><option>Orange - Très urgent</option><option>Jaune - Urgent</option><option>Vert - Standard</option><option>Bleu - Non urgent</option>
+      </select>
+    </div>
+    <button className="btn btn-success btn-lg" onClick={()=>onSave(patient.id,v)} style={{marginTop:'8px'}}><i className="fas fa-arrow-right"></i> Valider & Envoyer au Médecin</button>
+  </div>);
+}
+
+// ============ DOCTOR VIEW ============
+function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidentialNotes,setConfidentialNotes,prescriptions,setPrescriptions,payments,notifications,setNotifications,addNotification,toast}){
+  const [tab,setTab]=useState('queue');
+  const [dossierPatient,setDossierPatient]=useState(null);
+  const [editPatient,setEditPatient]=useState(null);
+  const [showNotifs,setShowNotifs]=useState(false);
+
+  // Active queue: patients at step 3 (waiting for doctor)
+  const activeQueue=patients.filter(p=>p.step===3);
+  // My patients: all patients this doctor has seen (doctorId matches), regardless of step, excluding terminated
+  const myOngoing=patients.filter(p=>p.doctorId===user.id && p.step!==3 && p.step<7);
+  // All my patients including terminated
+  const allMyPatients=patients.filter(p=>p.doctorId===user.id || p.step===3);
+  // Doctor's notifications
+  const myNotifs=notifications.filter(n=>n.forDoctorId===user.id);
+  const unreadCount=myNotifs.filter(n=>!n.read).length;
+
+  const markAllRead=async()=>{
+    const unread=myNotifs.filter(n=>!n.read);
+    for(const n of unread){
+      try { await supabase.from('notifications').update({read:true}).eq('id',n.id); } catch(e){}
+    }
+    setNotifications(prev=>prev.map(n=>n.forDoctorId===user.id?{...n,read:true}:n));
+  };
+
+  const tabs=[
+    {id:'queue',icon:'fas fa-stethoscope',label:'Consultations',count:activeQueue.length},
+    {id:'mypatients',icon:'fas fa-user-doctor',label:'Mes Patients',count:myOngoing.length},
+    {id:'notes',icon:'fas fa-lock',label:'Notes Confidentielles'},
+    {id:'history',icon:'fas fa-history',label:'Historique'},
+  ];
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {/* Notification Bell — positioned within the topbar */}
+    <div style={{position:'fixed',top:user.isSuperAdmin?'48px':'10px',right:'238px',zIndex:1050}}>
+      <button type="button" className="notif-bell" aria-label={`Notifications${unreadCount>0?` (${unreadCount} non lues)`:''}`} onClick={()=>setShowNotifs(!showNotifs)} style={{display:'flex',alignItems:'center',gap:'8px',background:'var(--surface)',color:'var(--text)',padding:'8px 12px',borderRadius:'var(--r-md)',boxShadow:'var(--e-1)',border:'1px solid var(--border-subtle)',cursor:'pointer',transition:'all var(--dur-fast)'}}>
+        <i className="fas fa-bell" style={{fontSize:'13px',color:'var(--primary-600)'}}></i>
+        <span style={{fontSize:'12px',fontWeight:600}}>Alertes</span>
+        {unreadCount>0&&<span className="notif-count" style={{position:'static',marginLeft:'2px'}}>{unreadCount}</span>}
+      </button>
+      {showNotifs&&<div className="notif-panel" style={{right:0,top:'48px'}}>
+        <div className="notif-panel-header">
+          <span><i className="fas fa-bell" style={{color:'var(--primary-500)'}}></i> Notifications {myNotifs.length>0&&<span style={{fontSize:'11px',color:'var(--text-muted)',fontWeight:500,marginLeft:'4px'}}>({myNotifs.length})</span>}</span>
+          {unreadCount>0&&<button className="btn btn-sm btn-outline" onClick={markAllRead} style={{fontSize:'10.5px',padding:'4px 10px'}}><i className="fas fa-check-double"></i> Tout marquer lu</button>}
+        </div>
+        <div className="notif-panel-body">
+          {myNotifs.length===0&&<div className="empty-state" style={{padding:'40px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-bell-slash"></i></div>
+            <div className="empty-state-title">Tout est calme</div>
+            <div className="empty-state-body">Aucune notification pour le moment. Vous serez averti·e ici dès qu'un examen, paiement ou prescription concerne un de vos patients.</div>
+          </div>}
+          {myNotifs.slice(0,20).map(n=>{
+            const mins=Math.round((Date.now()-new Date(n.createdAt))/60000);
+            const ago = mins<1?'à l\'instant':mins<60?`il y a ${mins} min`:mins<1440?`il y a ${Math.round(mins/60)} h`:`il y a ${Math.round(mins/1440)} j`;
+            return(<div key={n.id} className={`notif-item ${!n.read?'unread':''}`}>
+              <div style={{display:'flex',alignItems:'flex-start',gap:'10px'}}>
+                <div className="notif-icon" style={{background:n.type==='lab'?'var(--info-50)':n.type==='payment'?'var(--gold-100)':n.type==='prescription'?'var(--warning-50)':'var(--success-50)',color:n.type==='lab'?'var(--info-600)':n.type==='payment'?'var(--gold-600)':n.type==='prescription'?'var(--warning-600)':'var(--success-600)'}}>
+                  <i className={`fas ${n.type==='lab'?'fa-flask':n.type==='payment'?'fa-coins':n.type==='prescription'?'fa-pills':'fa-info-circle'}`}></i>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontWeight:600,color:'var(--text)'}}>{n.patientName}</div>
+                  <div style={{color:'var(--text-light)',fontSize:'12px',marginTop:'2px',lineHeight:1.5}}>{n.message}</div>
+                  <div className="notif-time"><i className="fas fa-clock" aria-hidden="true"></i> {ago} <span style={{opacity:.5}}>·</span> {n.fromUser}</div>
+                </div>
+              </div>
+            </div>);
+          })}
+        </div>
+      </div>}
+    </div>
+
+    {tab==='queue'&&(<div>
+      <div className="page-header"><div><h1>Consultations</h1><p>{activeQueue.length} patient(s) à voir</p></div></div>
+      {activeQueue.length===0&&<div className="card" style={{textAlign:'center',padding:'30px'}}><p style={{color:'var(--text-light)',fontSize:'16px'}}>Aucun patient en attente de consultation</p></div>}
+      {activeQueue.map(p=><DoctorConsult key={p.id} patient={p} user={user} patients={patients} setPatients={setPatients} labOrders={labOrders} setLabOrders={setLabOrders} confidentialNotes={confidentialNotes} setConfidentialNotes={setConfidentialNotes} prescriptions={prescriptions} setPrescriptions={setPrescriptions} onOpenDossier={setDossierPatient} onEditPatient={setEditPatient} payments={payments} addNotification={addNotification} toast={toast}/>)}
+    </div>)}
+
+    {tab==='mypatients'&&(<div>
+      <div className="page-header"><div><h1>Mes Patients en Cours</h1><p>{myOngoing.length} patient(s) dans d'autres services + {patients.filter(p=>p.doctorId===user.id&&p.step===7).length} terminé(s)</p></div></div>
+      {myOngoing.length===0&&<div className="card" style={{textAlign:'center',padding:'30px'}}><p style={{color:'var(--text-light)',fontSize:'16px'}}>Aucun patient en cours dans d'autres services</p></div>}
+      {myOngoing.map(p=><div key={p.id} className="card" style={{borderLeft:`4px solid ${p.step===5?'var(--info)':p.step===7?'var(--accent)':'var(--gold)'}`}}>
+        <div className="card-header">
+          <div>
+            <h3><i className="fas fa-user-injured"></i> {p.nom} {p.prenom}</h3>
+            <div className="patient-flow">{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<p.step?'done':''} ${i===p.step?'current':''}`}>{s}</span>)}</div>
+          </div>
+          <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+            <span className="badge badge-gold">{p.insurance}</span>
+            <span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span>
+          </div>
+        </div>
+        {p.vitals&&<div style={{background:'#f0f7f4',borderRadius:'8px',padding:'10px 14px',marginBottom:'10px',fontSize:'12px'}}>
+          <strong>Vitaux:</strong> T° {p.vitals.temp}°C | TA: {p.vitals.tension} | SpO2: {p.vitals.spo2}%
+        </div>}
+        {p.diagnosis&&<p style={{fontSize:'12px',marginBottom:'8px'}}><strong>Diagnostic:</strong> {p.diagnosis}</p>}
+        <PatientActivityFeed patientId={p.id} payments={payments} labOrders={labOrders} prescriptions={prescriptions} limit={4}/>
+        <div style={{display:'flex',gap:'8px',marginTop:'10px',paddingTop:'8px',borderTop:'1px solid #eef0ee'}}>
+          <button className="btn btn-sm btn-primary" onClick={()=>setDossierPatient(p)}><i className="fas fa-folder-open"></i> Dossier</button>
+          <button className="btn btn-sm btn-outline" onClick={()=>setEditPatient(p)}><i className="fas fa-pen"></i> Modifier</button>
+          {labOrders.filter(l=>l.patientId===p.id&&l.status==='completed').length>0&&<span className="badge badge-green"><i className="fas fa-check"></i> Résultats labo</span>}
+        </div>
+      </div>)}
+
+      {/* Terminated patients */}
+      {patients.filter(p=>p.doctorId===user.id&&p.step===7).length>0&&<>
+        <h3 style={{margin:'24px 0 12px',color:'var(--text-light)'}}>Patients terminés</h3>
+        <div className="card"><table><thead><tr><th>Patient</th><th>Diagnostic</th><th>Assurance</th><th></th></tr></thead><tbody>
+        {patients.filter(p=>p.doctorId===user.id&&p.step===7).map(p=><tr key={p.id}>
+          <td><strong>{p.nom} {p.prenom}</strong></td>
+          <td>{p.diagnosis||'—'}</td>
+          <td><span className="badge badge-gold">{p.insurance}</span></td>
+          <td><button className="btn btn-sm btn-outline" onClick={()=>setDossierPatient(p)}><i className="fas fa-folder-open"></i> Dossier</button></td>
+        </tr>)}
+        </tbody></table></div>
+      </>}
+    </div>)}
+
+    {tab==='notes'&&(<div>
+      <div className="page-header"><div><h1>Notes Confidentielles</h1><p>Visibles uniquement par vous et l'administrateur</p></div></div>
+      {confidentialNotes.filter(n=>user.isSuperAdmin||n.doctorId===user.id).length===0&&<div className="card"><p style={{color:'var(--text-light)',textAlign:'center',padding:'20px'}}>Aucune note confidentielle enregistrée</p></div>}
+      {confidentialNotes.filter(n=>user.isSuperAdmin||n.doctorId===user.id).map(n=><div key={n.id} className="confidential-note">
+        <div style={{display:'flex',justifyContent:'space-between'}}><strong>{n.patientName}</strong><span style={{fontSize:'11px',color:'var(--text-light)'}}>{new Date(n.date).toLocaleDateString('fr-FR')} à {new Date(n.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+        <p style={{marginTop:'8px',fontSize:'13px'}}>{n.content}</p>
+      </div>)}
+    </div>)}
+    {tab==='history'&&(<div>
+      <div className="page-header"><div><h1>Historique Patients</h1></div></div>
+      <div className="card"><table><thead><tr><th>Patient</th><th>Assurance</th><th>Étape</th><th>Diagnostic</th><th>Vitaux</th><th></th></tr></thead><tbody>
+      {patients.filter(p=>p.step>=3).map(p=><tr key={p.id}><td><strong>{p.nom} {p.prenom}</strong></td><td><span className="badge badge-gold">{p.insurance}</span></td><td><span className="badge badge-blue">{p.stepLabel}</span></td><td>{p.diagnosis||'—'}</td><td style={{fontSize:'11px'}}>{p.vitals?`${p.vitals.temp}°C, TA:${p.vitals.tension}`:'-'}</td><td><button className="btn btn-sm btn-outline" onClick={()=>setDossierPatient(p)}><i className="fas fa-folder-open"></i></button></td></tr>)}
+      </tbody></table></div>
+    </div>)}
+
+    {/* Patient Dossier Modal */}
+    {dossierPatient&&<PatientDossier patient={dossierPatient} payments={payments} labOrders={labOrders} prescriptions={prescriptions} confidentialNotes={confidentialNotes} user={user} onClose={()=>setDossierPatient(null)}/>}
+    {/* Edit Patient Modal */}
+    {editPatient&&<EditPatientModal patient={editPatient} patients={patients} setPatients={setPatients} onClose={()=>setEditPatient(null)}/>}
+  </DashLayout>);
+}
+
+function DoctorConsult({patient,user,patients,setPatients,labOrders,setLabOrders,confidentialNotes,setConfidentialNotes,prescriptions,setPrescriptions,onOpenDossier,onEditPatient,payments,addNotification,toast}){
+  const [insurance,setInsurance]=useState(patient.insurance);
+  const [note,setNote]=useState('');
+  const [labDesc,setLabDesc]=useState('');
+  const [rxText,setRxText]=useState('');
+  const [diagnosis,setDiagnosis]=useState(patient.diagnosis||'');
+
+  // Show lab results for this patient
+  const patientLabs=labOrders.filter(l=>l.patientId===patient.id);
+  const completedLabs=patientLabs.filter(l=>l.status==='completed');
+  const patientRx=prescriptions.filter(r=>r.patientId===patient.id);
+  const patientPayments=(payments||[]).filter(p=>p.patientId===patient.id);
+
+  const t = toast || {success:()=>{},error:()=>{},info:()=>{},warning:()=>{}};
+
+  const assignInsurance=async()=>{
+    try{
+      await supabase.from('patients').update({ insurance }).eq('id', patient.id);
+      setPatients(patients.map(p=>p.id===patient.id?{...p,insurance}:p));
+      t.success('Catégorie: '+insurance);
+    }catch(err){t.error('Erreur mise à jour assurance');}
+  };
+
+  const addNote=async()=>{
+    if(!note.trim()){t.warning('Écrivez une note avant de sauvegarder.');return;}
+    try{
+      const newNote = { id: 'N' + Date.now(), patientId: patient.id, patientName: `${patient.nom} ${patient.prenom}`, doctorId: user.id, doctorName: user.name, content: note, date: new Date().toISOString() };
+      const {error}=await supabase.from('confidential_notes').insert({
+        id: newNote.id, patient_id: patient.id, patient_name: newNote.patientName,
+        doctor_id: user.id, doctor_name: user.name, content: note, date: newNote.date
+      });
+      if(error) throw error;
+      setConfidentialNotes([...confidentialNotes, newNote]);
+      setNote('');t.success('Note confidentielle enregistrée');
+    }catch(err){t.error('Erreur sauvegarde note');}
+  };
+
+  const orderLab=async()=>{
+    if(!labDesc.trim()){t.warning('Indiquez les examens à demander.');return;}
+    try{
+      const newOrder = { id: 'LAB' + Date.now(), patientId: patient.id, patientName: `${patient.nom} ${patient.prenom}`, description: labDesc, orderedBy: user.name, date: new Date().toISOString(), status: 'pending', results: null };
+      const {error}=await supabase.from('lab_orders').insert({
+        id: newOrder.id, patient_id: patient.id, patient_name: newOrder.patientName,
+        description: labDesc, ordered_by: user.name, date: newOrder.date, status: 'pending'
+      });
+      if(error) throw error;
+      setLabOrders([...labOrders, newOrder]);
+      setLabDesc('');t.success('Ordre labo ajouté: '+labDesc);
+    }catch(err){t.error('Erreur ordre labo');}
+  };
+
+  const addRx=async()=>{
+    if(!rxText.trim()){t.warning('Indiquez la prescription.');return;}
+    try{
+      const newRx = { id: 'RX' + Date.now(), patientId: patient.id, patientName: `${patient.nom} ${patient.prenom}`, content: rxText, prescribedBy: user.name, date: new Date().toISOString(), dispensed: false };
+      const {error}=await supabase.from('prescriptions').insert({
+        id: newRx.id, patient_id: patient.id, patient_name: newRx.patientName,
+        content: rxText, prescribed_by: user.name, date: newRx.date, dispensed: false
+      });
+      if(error) throw error;
+      setPrescriptions([...prescriptions, newRx]);
+      setRxText('');t.success('Prescription ajoutée');
+    }catch(err){t.error('Erreur prescription');}
+  };
+
+  const sendToPharmacy=async(nextStep,nextLabel)=>{
+    try{
+      await supabase.from('patients').update({ step: nextStep, step_label: nextLabel, diagnosis, doctor_id: user.id, doctor_name: user.name }).eq('id', patient.id);
+      setPatients(patients.map(p=>p.id===patient.id?{...p,step:nextStep,stepLabel:nextLabel,diagnosis,doctorId:user.id,doctorName:user.name}:p));
+      t.success(`Patient → ${nextLabel}`);
+    }catch(err){t.error('Erreur transfert patient');}
+  };
+
+  return(<div className="card" style={{borderLeft:'3px solid var(--accent)'}}>
+    <div className="card-header">
+      <div className="p-headline" style={{flex:1,minWidth:'240px'}}>
+        <PatientAvatar patient={patient}/>
+        <div style={{flex:1,minWidth:0}}>
+          <div className="p-name">{patient.nom} {patient.prenom}</div>
+          <div className="p-meta">{patient.sexe==='M'?'M':'F'} <span style={{opacity:.4}}>·</span> <i className="fas fa-hashtag" style={{fontSize:'9px',opacity:.5}}></i>{patient.id} <span style={{opacity:.4}}>·</span> <i className="fas fa-phone" style={{fontSize:'9px',opacity:.5}}></i> {patient.phone}</div>
+          <div className="patient-flow" style={{marginTop:'10px'}}>{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<patient.step?'done':''} ${i===patient.step?'current':''}`}>{s}</span>)}</div>
+        </div>
+      </div>
+      <div style={{display:'flex',gap:'8px',alignItems:'center',flexWrap:'wrap'}}>
+        <button className="btn btn-sm btn-outline" onClick={()=>onOpenDossier&&onOpenDossier(patient)}><i className="fas fa-folder-open"></i> Dossier</button>
+        <button className="btn btn-sm btn-outline" onClick={()=>onEditPatient&&onEditPatient(patient)}><i className="fas fa-pen"></i> Modifier</button>
+        <span className={`badge ${insuranceClass(patient.insurance)}`} style={{fontSize:'12px',padding:'5px 12px'}}><i className="fas fa-shield-halved" style={{fontSize:'10px'}}></i> {patient.insurance}</span>
+      </div>
+    </div>
+
+    {patient.vitals&&<div style={{background:'#f0f7f4',borderRadius:'8px',padding:'12px 16px',marginBottom:'16px',fontSize:'12px'}}>
+      <strong>Vitaux:</strong> T° {patient.vitals.temp}°C | TA: {patient.vitals.tension} | Poids: {patient.vitals.poids}kg | Taille: {patient.vitals.taille}cm | Pouls: {patient.vitals.pouls}bpm | SpO2: {patient.vitals.spo2}% | <span className={`badge badge-sm ${patient.vitals.triage.includes('Rouge')?'badge-red':patient.vitals.triage.includes('Orange')?'badge-yellow':'badge-green'}`}>{patient.vitals.triage}</span>
+    </div>}
+
+    {/* Show existing lab results if any */}
+    {completedLabs.length>0&&<div style={{background:'#e4edf6',borderRadius:'8px',padding:'12px 16px',marginBottom:'16px',fontSize:'12px'}}>
+      <strong><i className="fas fa-flask"></i> Résultats Labo disponibles:</strong>
+      {completedLabs.map(l=><div key={l.id} style={{marginTop:'6px',padding:'6px 10px',background:'#fff',borderRadius:'4px'}}>
+        <strong>{l.description}:</strong> {l.results} <span style={{color:'var(--text-light)',fontSize:'10px'}}>({l.completedBy}, {new Date(l.completedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})})</span>
+      </div>)}
+    </div>}
+
+    {/* Show existing prescriptions */}
+    {patientRx.length>0&&<div style={{background:'#fffbf5',borderRadius:'8px',padding:'12px 16px',marginBottom:'16px',fontSize:'12px'}}>
+      <strong><i className="fas fa-pills"></i> Prescriptions:</strong>
+      {patientRx.map(r=><div key={r.id} style={{marginTop:'4px'}}>{r.content} <span className={`badge badge-sm ${r.dispensed?'badge-green':'badge-yellow'}`}>{r.dispensed?'Dispensé':'En attente'}</span></div>)}
+    </div>}
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginBottom:'16px'}}>
+      <div>
+        <div className="form-group"><label>Diagnostic</label><input value={diagnosis} onChange={e=>setDiagnosis(e.target.value)} placeholder="Diagnostic principal..."/></div>
+        <div className="form-group"><label>Catégorie Assurance</label>
+          <div style={{display:'flex',gap:'8px'}}><select value={insurance} onChange={e=>setInsurance(e.target.value)} style={{flex:1}}>{INSURANCE_TYPES.map(t=><option key={t}>{t}</option>)}</select>
+          <button className="btn btn-sm btn-gold" onClick={assignInsurance} title="Assigner"><i className="fas fa-check"></i></button></div>
+        </div>
+      </div>
+      <div>
+        <div className="form-group"><label><i className="fas fa-flask"></i> Examens de Labo</label><div style={{display:'flex',gap:'8px'}}><input value={labDesc} onChange={e=>setLabDesc(e.target.value)} placeholder="NFS, GE, CRP..."/><button className="btn btn-sm btn-primary" onClick={orderLab}><i className="fas fa-plus"></i></button></div></div>
+        <div className="form-group"><label><i className="fas fa-pills"></i> Prescription</label><div style={{display:'flex',gap:'8px'}}><input value={rxText} onChange={e=>setRxText(e.target.value)} placeholder="Médicaments + posologie"/><button className="btn btn-sm btn-success" onClick={addRx}><i className="fas fa-plus"></i></button></div></div>
+      </div>
+    </div>
+
+    <div className="form-group"><label><i className="fas fa-lock"></i> Note Confidentielle (Médecin + Admin)</label>
+      <div style={{display:'flex',gap:'8px'}}><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="Note privée (non visible par le patient ou autres services)..." style={{minHeight:'60px',flex:1}}/><button className="btn btn-sm btn-warning" onClick={addNote} style={{alignSelf:'flex-end'}}><i className="fas fa-lock"></i> Sauver</button></div>
+    </div>
+
+    {/* Payment history for this patient */}
+    {patientPayments.length>0&&<div style={{fontSize:'12px',color:'var(--text-light)',marginBottom:'8px'}}>
+      <i className="fas fa-receipt"></i> {patientPayments.length} paiement(s) enregistré(s) — Total: {fmt(patientPayments.reduce((s,p)=>s+p.amount,0))}
+    </div>}
+
+    <div style={{display:'flex',gap:'12px',marginTop:'16px',paddingTop:'16px',borderTop:'1px solid var(--border)'}}>
+      <button className="btn btn-primary" onClick={()=>sendToPharmacy(4,'Pharmacie (Examens/Méds)')}><i className="fas fa-flask"></i> Pharmacie → Labo/Méds</button>
+      <button className="btn btn-success" onClick={()=>sendToPharmacy(6,'Pharmacie (Sortie)')}><i className="fas fa-door-open"></i> Pharmacie → Sortie</button>
+    </div>
+  </div>);
+}
+
+// ============ LAB VIEW ============
+function LabView({user,patients,setPatients,labOrders,setLabOrders,addNotification,payments,prescriptions,toast}){
+  const [tab,setTab]=useState('pending');
+  const [dossierPatient,setDossierPatient]=useState(null);
+  const [editPatient,setEditPatient]=useState(null);
+  const pending=labOrders.filter(o=>o.status==='pending');
+  const completed=labOrders.filter(o=>o.status==='completed');
+  const labPatientIds=[...new Set(labOrders.map(l=>l.patientId))];
+  const labPatients=patients.filter(p=>labPatientIds.includes(p.id));
+
+  const submitResult=async(orderId,result)=>{
+    try{
+      const now = new Date().toISOString();
+      const {error}=await supabase.from('lab_orders').update({ status: 'completed', results: result, completed_at: now, completed_by: user.name }).eq('id', orderId);
+      if(error) throw error;
+      setLabOrders(labOrders.map(o=>o.id===orderId?{...o,status:'completed',results:result,completedAt:now,completedBy:user.name}:o));
+      const order=labOrders.find(o=>o.id===orderId);
+      if(order){
+        await supabase.from('patients').update({ step: 3, step_label: 'Médecin (Résultats)' }).eq('id', order.patientId);
+        setPatients(patients.map(p=>p.id===order.patientId?{...p,step:3,stepLabel:'Médecin (Résultats)'}:p));
+        const patient=patients.find(p=>p.id===order.patientId);
+        if(patient && patient.doctorId){
+          addNotification({
+            type:'lab', patientId:patient.id, patientName:`${patient.nom} ${patient.prenom}`,
+            forDoctorId:patient.doctorId, forDoctorName:patient.doctorName||'',
+            fromUser:user.name, message:`Résultats labo prêts: ${order.description}`
+          });
+        }
+      }
+      toast.success('Résultats soumis → Médecin');
+    }catch(err){toast.error('Erreur soumission résultats: '+(err.message||''));}
+  };
+
+  const tabs=[
+    {id:'pending',icon:'fas fa-flask',label:'En Attente',count:pending.length},
+    {id:'completed',icon:'fas fa-check-double',label:'Complétés',count:completed.length},
+    {id:'patients',icon:'fas fa-users',label:'Patients Labo',count:labPatients.length},
+  ];
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {tab==='pending'&&(<div>
+      <div className="page-header"><div><h1>Ordres de Laboratoire</h1><p>{pending.length} analyse(s) en attente</p></div></div>
+      {pending.length===0&&<div className="card" style={{textAlign:'center',padding:'30px'}}><p style={{color:'var(--text-light)'}}>Tous les examens sont traités</p></div>}
+      {pending.map(o=><LabOrderCard key={o.id} order={o} onSubmit={submitResult} patient={patients.find(p=>p.id===o.patientId)}/>)}
+    </div>)}
+    {tab==='completed'&&(<div>
+      <div className="page-header"><div><h1>Résultats Complétés</h1></div></div>
+      <div className="card"><table><thead><tr><th>Patient</th><th>Examens</th><th>Résultats</th><th>Par</th><th>Date</th></tr></thead><tbody>
+      {completed.map(o=><tr key={o.id}><td><strong>{o.patientName}</strong></td><td>{o.description}</td><td style={{fontSize:'12px',maxWidth:'200px'}}>{o.results}</td><td>{o.completedBy}</td><td>{new Date(o.completedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</td></tr>)}
+      </tbody></table></div>
+    </div>)}
+    {tab==='patients'&&(<div>
+      <div className="page-header"><div><h1>Patients avec Examens</h1><p>{labPatients.length} patient(s) avec historique de laboratoire</p></div></div>
+      {labPatients.map(p=><div key={p.id} className="card" style={{borderLeft:'4px solid var(--info)'}}>
+        <div className="card-header">
+          <div><h3><i className="fas fa-user"></i> {p.nom} {p.prenom}</h3>
+            <div className="patient-flow">{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<p.step?'done':''} ${i===p.step?'current':''}`}>{s}</span>)}</div>
+          </div>
+          <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+            <span className="badge badge-gold">{p.insurance}</span>
+            <span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span>
+          </div>
+        </div>
+        {/* Show all labs for this patient */}
+        {labOrders.filter(l=>l.patientId===p.id).map(l=><div key={l.id} style={{padding:'8px 12px',background:l.status==='completed'?'#e8f0eb':'#fff8e1',borderRadius:'6px',marginBottom:'6px',fontSize:'12px',border:'1px solid '+(l.status==='completed'?'#c8e0cc':'#ffe0a0')}}>
+          <strong>{l.description}</strong> <span className={`badge badge-sm ${l.status==='completed'?'badge-green':'badge-yellow'}`}>{l.status==='completed'?'Complété':'En attente'}</span>
+          {l.results&&<div style={{marginTop:'4px',color:'var(--text)'}}>→ {l.results}</div>}
+        </div>)}
+        <div style={{display:'flex',gap:'8px',marginTop:'8px'}}>
+          <button className="btn btn-sm btn-primary" onClick={()=>setDossierPatient(p)}><i className="fas fa-folder-open"></i> Dossier</button>
+          <button className="btn btn-sm btn-outline" onClick={()=>setEditPatient(p)}><i className="fas fa-pen"></i> Modifier</button>
+        </div>
+      </div>)}
+    </div>)}
+    {/* Modals */}
+    {dossierPatient&&<PatientDossier patient={dossierPatient} payments={payments||[]} labOrders={labOrders} prescriptions={prescriptions||[]} confidentialNotes={[]} user={user} onClose={()=>setDossierPatient(null)}/>}
+    {editPatient&&<EditPatientModal patient={editPatient} patients={patients} setPatients={setPatients} onClose={()=>setEditPatient(null)}/>}
+  </DashLayout>);
+}
+
+function LabOrderCard({order,onSubmit}){
+  const [result,setResult]=useState('');
+  return(<div className="card" style={{borderLeft:'4px solid var(--info)'}}>
+    <div className="card-header"><h3><i className="fas fa-vial"></i> {order.patientName}</h3><span className="badge badge-yellow">En attente</span></div>
+    <div style={{background:'#f0f7f4',borderRadius:'8px',padding:'12px',marginBottom:'12px'}}>
+      <p style={{fontSize:'13px'}}><strong>Examens demandés:</strong> {order.description}</p>
+      <p style={{fontSize:'11px',color:'var(--text-light)',marginTop:'4px'}}>Prescrit par: {order.orderedBy} | {new Date(order.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</p>
+    </div>
+    <div className="form-group"><label>Résultats d'analyse</label><textarea value={result} onChange={e=>setResult(e.target.value)} placeholder="Saisir les résultats d'analyse..." style={{minHeight:'100px'}}/></div>
+    <button className="btn btn-success" onClick={()=>{if(result.trim())onSubmit(order.id,result)}}><i className="fas fa-paper-plane"></i> Soumettre Résultats → Médecin</button>
+  </div>);
+}
+
+// ============ PHARMACY VIEW ============
+function PharmacyView({user,patients,setPatients,inventory,setInventory,payments,setPayments,prescriptions,setPrescriptions,addNotification,labOrders,toast}){
+  const [tab,setTab]=useState('payments');
+  const [dossierPatient,setDossierPatient]=useState(null);
+  const [editPatient,setEditPatient]=useState(null);
+  const [patientSearch,setPatientSearch]=useState('');
+  const pharmacyQueue=patients.filter(p=>[1,4,6].includes(p.step));
+  const allPharmacyPatients=patients.filter(p=>p.step>=1);
+  const filteredPharmacyPatients=patientSearch.length>=2?allPharmacyPatients.filter(p=>`${p.nom} ${p.prenom} ${p.phone} ${p.id}`.toLowerCase().includes(patientSearch.toLowerCase())):allPharmacyPatients;
+
+  const tabs=[
+    {id:'payments',icon:'fas fa-cash-register',label:'Caisse',count:pharmacyQueue.length},
+    {id:'allpatients',icon:'fas fa-users',label:'Tous les Patients',count:allPharmacyPatients.length},
+    {id:'prescriptions',icon:'fas fa-prescription',label:'Ordonnances'},
+    {id:'inventory',icon:'fas fa-boxes-stacked',label:'Stock'},
+    {id:'edit',icon:'fas fa-user-pen',label:'Modifier Patient'},
+    {id:'reports',icon:'fas fa-chart-line',label:'Rapports Financiers'},
+  ];
+
+  const payAndForward=async(patient,amount,description,nextStep,nextLabel)=>{
+    const parsedAmount=parseInt(amount)||0;
+    if(parsedAmount<=0){toast.error('Montant invalide. Entrez un montant supérieur à 0.');return;}
+    try{
+      const payment={id:'PAY'+Date.now(),patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,amount:parsedAmount,description,insurance:patient.insurance,date:new Date().toISOString(),processedBy:user.name};
+      const {error}=await supabase.from('payments').insert({
+        id: payment.id, patient_id: patient.id, patient_name: payment.patientName,
+        amount: payment.amount, description, insurance: patient.insurance, date: payment.date, processed_by: user.name
+      });
+      if(error) throw error;
+      await supabase.from('patients').update({ step: nextStep, step_label: nextLabel, is_new: false }).eq('id', patient.id);
+      setPayments([payment,...payments]);
+      setPatients(patients.map(p=>p.id===patient.id?{...p,step:nextStep,stepLabel:nextLabel,isNew:false,payments:[...(p.payments||[]),payment]}:p));
+      if(patient.doctorId){
+        addNotification({
+          type:'payment', patientId:patient.id, patientName:`${patient.nom} ${patient.prenom}`,
+          forDoctorId:patient.doctorId, forDoctorName:patient.doctorName||'',
+          fromUser:user.name, message:`Paiement ${fmt(parsedAmount)} traité — ${description}`
+        });
+      }
+      toast.success(`${fmt(parsedAmount)} enregistré → ${nextLabel}`);
+    }catch(err){toast.error('Erreur paiement: '+(err.message||'Connexion perdue'));}
+  };
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {tab==='payments'&&<PharmacyPayments queue={pharmacyQueue} payAndForward={payAndForward} payments={payments} labOrders={labOrders} prescriptions={prescriptions}/>}
+    {tab==='allpatients'&&<div>
+      <div className="page-header"><div><h1>Tous les Patients</h1><p>{allPharmacyPatients.length} patient(s) — Vue complète avec dossier</p></div></div>
+      <div className="search-bar"><i className="fas fa-search"></i><input value={patientSearch} onChange={e=>setPatientSearch(e.target.value)} placeholder="Rechercher par nom, téléphone ou ID..."/></div>
+      {filteredPharmacyPatients.map(p=>{
+        const pPay=(payments||[]).filter(pay=>pay.patientId===p.id);
+        const totalPaid=pPay.reduce((s,pay)=>s+pay.amount,0);
+        return(<div key={p.id} className="card" style={{borderLeft:`4px solid ${p.step===7?'var(--accent)':[1,4,6].includes(p.step)?'var(--gold)':'var(--border)'}`}}>
+          <div className="card-header">
+            <div>
+              <h3><i className="fas fa-user"></i> {p.nom} {p.prenom}</h3>
+              <div className="patient-flow">{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<p.step?'done':''} ${i===p.step?'current':''}`}>{s}</span>)}</div>
+            </div>
+            <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+              <span className="badge badge-gold">{p.insurance}</span>
+              <span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span>
+              {totalPaid>0&&<span style={{fontSize:'13px',fontWeight:700,color:'var(--primary)'}}>{fmt(totalPaid)}</span>}
+            </div>
+          </div>
+          <PatientActivityFeed patientId={p.id} payments={payments} labOrders={labOrders} prescriptions={prescriptions} limit={3}/>
+          <div style={{display:'flex',gap:'8px',marginTop:'10px',paddingTop:'8px',borderTop:'1px solid #eef0ee'}}>
+            <button className="btn btn-sm btn-primary" onClick={()=>setDossierPatient(p)}><i className="fas fa-folder-open"></i> Dossier</button>
+            <button className="btn btn-sm btn-outline" onClick={()=>setEditPatient(p)}><i className="fas fa-pen"></i> Modifier</button>
+          </div>
+        </div>);
+      })}
+    </div>}
+    {tab==='prescriptions'&&<PharmacyPrescriptions prescriptions={prescriptions} setPrescriptions={setPrescriptions} patients={patients} addNotification={addNotification} user={user} toast={toast}/>}
+    {tab==='inventory'&&<PharmacyInventory inventory={inventory} setInventory={setInventory}/>}
+    {tab==='edit'&&<PharmacyEditPatient patients={patients} setPatients={setPatients} toast={toast}/>}
+    {tab==='reports'&&<PharmacyReports payments={payments}/>}
+    {/* Modals */}
+    {dossierPatient&&<PatientDossier patient={dossierPatient} payments={payments} labOrders={labOrders||[]} prescriptions={prescriptions} confidentialNotes={[]} user={user} onClose={()=>setDossierPatient(null)}/>}
+    {editPatient&&<EditPatientModal patient={editPatient} patients={patients} setPatients={setPatients} onClose={()=>setEditPatient(null)}/>}
+  </DashLayout>);
+}
+
+function PharmacyPayments({queue,payAndForward,payments,labOrders,prescriptions}){
+  const [amounts,setAmounts]=useState({});
+  return(<div>
+    <div className="page-header"><div><h1>Caisse — Paiements</h1><p>{queue.length} patient(s) en attente de paiement · tous les paiements passent par la pharmacie</p></div></div>
+    {queue.length===0&&<div className="card"><div className="empty-state">
+      <div className="empty-state-icon"><i className="fas fa-cash-register"></i></div>
+      <div className="empty-state-title">Caisse à jour</div>
+      <div className="empty-state-body">Aucun paiement en attente. La file s'actualise automatiquement quand un patient arrive.</div>
+    </div></div>}
+    {queue.map(p=>{
+      let desc='',nextStep=0,nextLabel='',suggestedAmount='',stepColor='var(--accent)',stepIcon='fa-stethoscope';
+      if(p.step===1){desc='Consultation médicale';nextStep=2;nextLabel='Infirmier (Vitaux)';suggestedAmount='15000';stepColor='var(--accent)';stepIcon='fa-stethoscope';}
+      else if(p.step===4){desc='Examens de laboratoire / Médicaments';nextStep=5;nextLabel='Laboratoire';suggestedAmount='25000';stepColor='var(--info-500)';stepIcon='fa-flask';}
+      else if(p.step===6){desc='Frais de sortie / Résultats';nextStep=7;nextLabel='Terminé (Sortie)';suggestedAmount='10000';stepColor='var(--gold-500)';stepIcon='fa-door-open';}
+      const currentVal = amounts[p.id]!==undefined?amounts[p.id]:suggestedAmount;
+      return(<div key={p.id} className="card" style={{borderLeft:`3px solid ${stepColor}`}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'20px'}}>
+          <div style={{flex:1,minWidth:'280px'}}>
+            <div className="p-headline" style={{marginBottom:'8px'}}>
+              <PatientAvatar patient={p}/>
+              <div>
+                <div className="p-name">{p.nom} {p.prenom}</div>
+                <div className="p-meta"><i className="fas fa-hashtag" style={{fontSize:'9px',opacity:.5}}></i> {p.id} <span style={{opacity:.4,margin:'0 4px'}}>·</span> <i className="fas fa-phone" style={{fontSize:'9px',opacity:.5}}></i> {p.phone}</div>
+              </div>
+            </div>
+            <div style={{display:'flex',gap:'6px',marginBottom:'8px',flexWrap:'wrap'}}>
+              <span className={`badge ${insuranceClass(p.insurance)}`}><i className="fas fa-shield-halved" style={{fontSize:'9px'}}></i> {p.insurance}</span>
+              <span className="badge" style={{background:`${stepColor}1a`,color:stepColor,boxShadow:`inset 0 0 0 1px ${stepColor}33`}}><i className={`fas ${stepIcon}`} style={{fontSize:'9px'}}></i> {desc}</span>
+            </div>
+            <div className="patient-flow">{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<p.step?'done':''} ${i===p.step?'current':''}`}>{s}</span>)}</div>
+            <PatientActivityFeed patientId={p.id} payments={payments} labOrders={labOrders} prescriptions={prescriptions} limit={3}/>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',alignItems:'stretch',gap:'10px',minWidth:'240px'}}>
+            <label style={{fontSize:'10px',fontWeight:700,color:'var(--gold-600)',letterSpacing:'1px',textTransform:'uppercase'}}><i className="fas fa-money-bill-wave"></i> Montant à encaisser</label>
+            <div className="pay-input-wrap">
+              <input type="number" inputMode="numeric" placeholder={suggestedAmount} value={currentVal} onChange={e=>setAmounts({...amounts,[p.id]:e.target.value})} aria-label={`Montant pour ${p.nom} ${p.prenom}`}/>
+              <span className="currency">CDF</span>
+            </div>
+            <button className="btn btn-success btn-lg" onClick={()=>{payAndForward(p,currentVal||suggestedAmount,desc,nextStep,nextLabel)}} style={{justifyContent:'center'}}><i className="fas fa-check-circle"></i> Encaisser & Transférer</button>
+            <div style={{fontSize:'10.5px',color:'var(--text-muted)',textAlign:'center'}}>→ {nextLabel}</div>
+          </div>
+        </div>
+      </div>);
+    })}
+  </div>);
+}
+
+function PharmacyPrescriptions({prescriptions,setPrescriptions,patients,addNotification,user,toast}){
+  const pending=prescriptions.filter(rx=>!rx.dispensed);
+  const done=prescriptions.filter(rx=>rx.dispensed);
+  const dispense=async(rxId)=>{
+    try{
+      const now = new Date().toISOString();
+      const {error}=await supabase.from('prescriptions').update({ dispensed: true, dispensed_at: now }).eq('id', rxId);
+      if(error) throw error;
+      setPrescriptions(prescriptions.map(rx=>rx.id===rxId?{...rx,dispensed:true,dispensedAt:now}:rx));
+      const rx=prescriptions.find(r=>r.id===rxId);
+      if(rx && patients){
+        const patient=patients.find(p=>p.id===rx.patientId);
+        if(patient && patient.doctorId){
+          addNotification({
+            type:'prescription', patientId:patient.id, patientName:`${patient.nom} ${patient.prenom}`,
+            forDoctorId:patient.doctorId, forDoctorName:patient.doctorName||'',
+            fromUser:user.name, message:`Prescription dispensée: ${rx.content.substring(0,50)}`
+          });
+        }
+      }
+      toast.success('Médicaments dispensés');
+    }catch(err){toast.error('Erreur dispensation');}
+  };
+  return(<div>
+    <div className="page-header"><div><h1>Ordonnances</h1><p>{pending.length} en attente de dispensation</p></div></div>
+    {pending.length===0&&<div className="card"><p style={{color:'var(--text-light)',textAlign:'center',padding:'20px'}}>Toutes les ordonnances ont été traitées</p></div>}
+    {pending.map(rx=><div key={rx.id} className="card" style={{borderLeft:'4px solid var(--warning)'}}>
+      <div className="card-header"><h3><i className="fas fa-pills"></i> {rx.patientName}</h3><span className="badge badge-yellow">À dispenser</span></div>
+      <div style={{background:'#fffbf5',borderRadius:'8px',padding:'12px',margin:'8px 0'}}><p style={{fontSize:'13px',fontWeight:500}}>{rx.content}</p></div>
+      <p style={{fontSize:'11px',color:'var(--text-light)'}}>Prescrit par: {rx.prescribedBy} | {new Date(rx.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</p>
+      <button className="btn btn-success btn-sm" onClick={()=>dispense(rx.id)} style={{marginTop:'12px'}}><i className="fas fa-check"></i> Marquer Dispensé</button>
+    </div>)}
+    {done.length>0&&<><h3 style={{margin:'24px 0 12px',color:'var(--text-light)'}}>Dispensés récemment</h3>
+    <div className="card"><table><thead><tr><th>Patient</th><th>Prescription</th><th>Prescripteur</th><th>Dispensé à</th></tr></thead><tbody>
+    {done.slice(0,10).map(rx=><tr key={rx.id}><td>{rx.patientName}</td><td style={{fontSize:'12px'}}>{rx.content}</td><td>{rx.prescribedBy}</td><td>{rx.dispensedAt?new Date(rx.dispensedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):''}</td></tr>)}
+    </tbody></table></div></>}
+  </div>);
+}
+
+function PharmacyInventory({inventory,setInventory}){
+  const [search,setSearch]=useState('');
+  const [catFilter,setCatFilter]=useState('all');
+  const [stockFilter,setStockFilter]=useState('all');
+  const categories=[...new Set(inventory.map(m=>m.category))].sort();
+
+  let filtered=inventory;
+  if(search)filtered=filtered.filter(m=>m.name.toLowerCase().includes(search.toLowerCase()));
+  if(catFilter!=='all')filtered=filtered.filter(m=>m.category===catFilter);
+  if(stockFilter==='low')filtered=filtered.filter(m=>m.stock<=m.minStock);
+  else if(stockFilter==='ok')filtered=filtered.filter(m=>m.stock>m.minStock);
+
+  const lowStock=inventory.filter(m=>m.stock<=m.minStock);
+  const totalValue=inventory.reduce((s,m)=>s+m.stock*m.price,0);
+
+  return(<div>
+    <div className="page-header"><div><h1>Inventaire Pharmacie</h1><p>{inventory.length} produits référencés | Valeur totale: {fmt(totalValue)}</p></div></div>
+
+    <div className="stats-grid">
+      <div className="stat-card"><div className="stat-icon green"><i className="fas fa-pills"></i></div><div className="stat-value">{inventory.length}</div><div className="stat-label">Total Produits</div></div>
+      <div className="stat-card danger"><div className="stat-icon red"><i className="fas fa-exclamation-triangle"></i></div><div className="stat-value">{lowStock.length}</div><div className="stat-label">Stock Critique</div></div>
+      <div className="stat-card gold"><div className="stat-icon gold"><i className="fas fa-coins"></i></div><div className="stat-value">{fmt(totalValue)}</div><div className="stat-label">Valeur Stock</div></div>
+      <div className="stat-card info"><div className="stat-icon blue"><i className="fas fa-truck"></i></div><div className="stat-value">{[...new Set(inventory.map(m=>m.supplier))].length}</div><div className="stat-label">Fournisseurs</div></div>
+    </div>
+
+    {lowStock.length>0&&<div className="card" style={{borderLeft:'4px solid var(--danger)',background:'#fffbfb'}}>
+      <h3><i className="fas fa-exclamation-triangle"></i> ALERTES STOCK CRITIQUE</h3>
+      <table><thead><tr><th>Médicament</th><th>Stock Actuel</th><th>Stock Min.</th><th>Déficit</th><th>Fournisseur</th></tr></thead><tbody>
+      {lowStock.map(m=><tr key={m.id}><td><strong>{m.name}</strong></td><td className="stock-low">{m.stock} {m.unit}</td><td>{m.minStock} {m.unit}</td><td className="stock-low">-{m.minStock-m.stock}</td><td>{m.supplier}</td></tr>)}
+      </tbody></table>
+    </div>}
+
+    <div className="filter-bar">
+      <input placeholder="🔍 Rechercher un médicament..." value={search} onChange={e=>setSearch(e.target.value)} style={{flex:1,minWidth:'200px'}}/>
+      <select value={catFilter} onChange={e=>setCatFilter(e.target.value)}><option value="all">Toutes catégories</option>{categories.map(c=><option key={c} value={c}>{c}</option>)}</select>
+      <select value={stockFilter} onChange={e=>setStockFilter(e.target.value)}><option value="all">Tout stock</option><option value="low">Stock bas uniquement</option><option value="ok">En stock uniquement</option></select>
+    </div>
+
+    <div className="card">
+      <table><thead><tr><th>Médicament</th><th>Catégorie</th><th>Stock</th><th>Statut</th><th>Prix Unit.</th><th>Fournisseur</th></tr></thead><tbody>
+      {filtered.map(m=>{
+        const pct=Math.min(Math.round((m.stock/Math.max(m.minStock*2,1))*100),100);
+        const isLow=m.stock<=m.minStock;
+        return(<tr key={m.id}>
+          <td><strong>{m.name}</strong><br/><span style={{fontSize:'10px',color:'var(--text-light)'}}>Réf: {m.id}</span></td>
+          <td><span className="badge badge-blue">{m.category}</span></td>
+          <td>{m.stock} {m.unit} <div className="stock-bar"><div className="stock-bar-fill" style={{width:pct+'%',background:isLow?'#d64545':'#52b788'}}/></div></td>
+          <td>{isLow?<span className="badge badge-red"><i className="fas fa-exclamation-circle"></i> CRITIQUE</span>:<span className="badge badge-green"><i className="fas fa-check-circle"></i> OK</span>}</td>
+          <td style={{fontWeight:600}}>{fmt(m.price)}</td>
+          <td style={{fontSize:'12px'}}>{m.supplier}</td>
+        </tr>);
+      })}
+      </tbody></table>
+    </div>
+  </div>);
+}
+
+function PharmacyEditPatient({patients,setPatients,toast}){
+  const [selected,setSelected]=useState(null);
+  const [form,setForm]=useState({});
+  const [saving,setSaving]=useState(false);
+  const [searchQ,setSearchQ]=useState('');
+  const displayedPatients=searchQ.length>=2?patients.filter(p=>`${p.nom} ${p.prenom} ${p.phone}`.toLowerCase().includes(searchQ.toLowerCase())):patients;
+
+  const selectP=(p)=>{setSelected(p);setForm({...p});};
+  const save=async()=>{
+    if(!form.nom||!form.prenom){toast.error('Nom et prénom obligatoires.');return;}
+    setSaving(true);
+    try{
+      const {error}=await supabase.from('patients').update({
+        nom: form.nom, prenom: form.prenom, phone: form.phone, email: form.email,
+        insurance: form.insurance, sexe: form.sexe, adresse: form.adresse, langue: form.langue
+      }).eq('id', selected.id);
+      if(error) throw error;
+      setPatients(patients.map(p=>p.id===selected.id?{...p,...form}:p));
+      toast.success('Patient mis à jour');
+      setSelected(null);
+    }catch(err){toast.error('Erreur: '+(err.message||''));}
+    setSaving(false);
+  };
+
+  return(<div>
+    <div className="page-header"><div><h1>Modifier Patient</h1><p>Modifier informations personnelles et catégorie d'assurance</p></div></div>
+    {!selected?(<div>
+      <div className="search-bar"><i className="fas fa-search"></i><input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Rechercher un patient..."/></div>
+      <div className="card"><table><thead><tr><th>Patient</th><th>Téléphone</th><th>Assurance</th><th>Étape</th><th></th></tr></thead><tbody>
+      {displayedPatients.map(p=><tr key={p.id}><td><strong>{p.nom} {p.prenom}</strong></td><td>{p.phone}</td><td><span className="badge badge-gold">{p.insurance}</span></td><td><span className="badge badge-blue">{p.stepLabel}</span></td>
+        <td><button className="btn btn-sm btn-outline" onClick={()=>selectP(p)}><i className="fas fa-pen"></i> Modifier</button></td></tr>)}
+      </tbody></table></div>
+    </div>):(<div className="card">
+      <h3><i className="fas fa-pen-to-square"></i> Modifier: {selected.nom} {selected.prenom}</h3>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginTop:'16px'}}>
+        <div className="form-group"><label>Nom</label><input value={form.nom||''} onChange={e=>setForm({...form,nom:e.target.value})}/></div>
+        <div className="form-group"><label>Prénom</label><input value={form.prenom||''} onChange={e=>setForm({...form,prenom:e.target.value})}/></div>
+        <div className="form-group"><label>Téléphone</label><input value={form.phone||''} onChange={e=>setForm({...form,phone:e.target.value})}/></div>
+        <div className="form-group"><label>Email</label><input value={form.email||''} onChange={e=>setForm({...form,email:e.target.value})}/></div>
+        <div className="form-group"><label>Catégorie Assurance</label><select value={form.insurance||'Régulier'} onChange={e=>setForm({...form,insurance:e.target.value})}>{INSURANCE_TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
+        <div className="form-group"><label>Sexe</label><select value={form.sexe||'M'} onChange={e=>setForm({...form,sexe:e.target.value})}><option value="M">M</option><option value="F">F</option></select></div>
+        <div className="form-group"><label>Adresse</label><input value={form.adresse||''} onChange={e=>setForm({...form,adresse:e.target.value})}/></div>
+        <div className="form-group"><label>Langue</label><select value={form.langue||'Français'} onChange={e=>setForm({...form,langue:e.target.value})}><option>Français</option><option>Lingala</option><option>Kikongo</option><option>Swahili</option><option>Tshiluba</option></select></div>
+      </div>
+      <div style={{display:'flex',gap:'12px',marginTop:'20px'}}>
+        <button className={`btn btn-success ${saving?'loading':''}`} onClick={save} disabled={saving}>{saving?<><i className="fas fa-spinner fa-spin"></i> Enregistrement...</>:<><i className="fas fa-save"></i> Enregistrer</>}</button>
+        <button className="btn btn-outline" onClick={()=>setSelected(null)} disabled={saving}>Annuler</button>
+      </div>
+    </div>)}
+  </div>);
+}
+
+function PharmacyReports({payments}){
+  const [filter,setFilter]=useState('all');
+  const [dateFilter,setDateFilter]=useState('today');
+  const filtered=filter==='all'?payments:payments.filter(p=>p.insurance===filter);
+  const total=filtered.reduce((s,p)=>s+p.amount,0);
+  const totalAll=payments.reduce((s,p)=>s+p.amount,0);
+
+  const byInsurance=INSURANCE_TYPES.map(t=>({type:t,total:payments.filter(p=>p.insurance===t).reduce((s,p)=>s+p.amount,0),count:payments.filter(p=>p.insurance===t).length}));
+  const byService=[...new Set(payments.map(p=>p.description))].map(d=>({service:d,total:payments.filter(p=>p.description===d).reduce((s,p)=>s+p.amount,0),count:payments.filter(p=>p.description===d).length}));
+
+  return(<div>
+    <div className="page-header"><div><h1>Rapports Financiers</h1><p>Vue d'ensemble des revenus par catégorie et service</p></div>
+      <button className="btn btn-outline btn-sm" onClick={()=>window.print()}><i className="fas fa-print"></i> Imprimer</button>
+    </div>
+
+    <div className="stats-grid">
+      <div className="stat-card gold"><div className="stat-icon gold"><i className="fas fa-money-bill-wave"></i></div><div className="stat-value">{fmt(totalAll)}</div><div className="stat-label">Revenu total du jour</div><div className="stat-trend"><i className="fas fa-arrow-up" style={{color:'var(--success-500)'}}></i> {payments.length} transactions</div></div>
+      <div className="stat-card"><div className="stat-icon green"><i className="fas fa-receipt"></i></div><div className="stat-value">{payments.length}</div><div className="stat-label">Transactions</div><div className="stat-trend"><i className="fas fa-clock"></i> aujourd'hui</div></div>
+      <div className="stat-card info"><div className="stat-icon blue"><i className="fas fa-calculator"></i></div><div className="stat-value" style={{fontSize:'20px'}}>{payments.length>0?fmt(Math.round(totalAll/payments.length)):'0 CDF'}</div><div className="stat-label">Moyenne / transaction</div><div className="stat-trend"><i className="fas fa-chart-line"></i> ticket moyen</div></div>
+    </div>
+
+    <div className="card">
+      <h3><i className="fas fa-chart-column"></i> Revenus par catégorie d'assurance</h3>
+      <BarChartByInsurance data={byInsurance} totalAll={totalAll}/>
+      <table style={{marginTop:'18px'}}>
+        <thead><tr><th>Catégorie</th><th>Patients</th><th className="num">Total encaissé</th><th className="num">Part</th></tr></thead><tbody>
+          {byInsurance.map(b=>{const pct=totalAll>0?((b.total/totalAll)*100):0;return(<tr key={b.type}>
+            <td><span className={`badge ${insuranceClass(b.type)}`}>{b.type}</span></td>
+            <td>{b.count}</td>
+            <td className="num" style={{fontWeight:600,color:'var(--primary-700)'}}>{fmt(b.total)}</td>
+            <td className="num" style={{color:'var(--text-light)'}}>{pct.toFixed(1)}%</td>
+          </tr>);})}
+        </tbody>
+      </table>
+    </div>
+
+    <div className="card">
+      <h3><i className="fas fa-list-check"></i> Revenus par type de service</h3>
+      <table><thead><tr><th>Service</th><th>Transactions</th><th className="num">Total</th></tr></thead><tbody>
+      {byService.length===0&&<tr><td colSpan={3}><div className="empty-state" style={{padding:'24px'}}><div className="empty-state-body">Aucune donnée encore.</div></div></td></tr>}
+      {byService.map(s=><tr key={s.service}><td>{s.service}</td><td>{s.count}</td><td className="num" style={{fontWeight:600}}>{fmt(s.total)}</td></tr>)}
+      </tbody></table>
+    </div>
+
+    <div className="filter-bar"><label style={{fontWeight:700,fontSize:'11px',textTransform:'uppercase',letterSpacing:'.6px',color:'var(--text-light)'}}>Filtrer par assurance</label>
+      <select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">Toutes catégories</option>{INSURANCE_TYPES.map(t=><option key={t} value={t}>{t}</option>)}</select>
+    </div>
+
+    <div className="card">
+      <h3>Détail des transactions {filter!=='all'&&<span style={{color:'var(--gold-600)',fontWeight:600}}>— {filter}</span>}</h3>
+      <table><thead><tr><th>Heure</th><th>Patient</th><th>Service</th><th className="num">Montant</th><th>Catégorie</th><th>Caissier</th></tr></thead><tbody>
+      {filtered.map(p=><tr key={p.id}><td style={{whiteSpace:'nowrap'}}>{new Date(p.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</td><td><strong>{p.patientName}</strong></td><td>{p.description}</td><td className="num" style={{fontWeight:700,color:'var(--primary-700)'}}>{fmt(p.amount)}</td><td><span className={`badge ${insuranceClass(p.insurance)}`}>{p.insurance}</span></td><td>{p.processedBy}</td></tr>)}
+      </tbody></table>
+      {filtered.length>0&&<div style={{textAlign:'right',padding:'14px 16px',borderTop:'2px solid var(--primary-700)',marginTop:'8px',fontWeight:700,fontSize:'15px',color:'var(--primary-700)'}}>TOTAL : {fmt(total)}</div>}
+      {filtered.length===0&&<div className="empty-state" style={{padding:'32px'}}>
+        <div className="empty-state-icon"><i className="fas fa-receipt"></i></div>
+        <div className="empty-state-title">Aucune transaction</div>
+        <div className="empty-state-body">Aucun paiement n'a été enregistré pour cette catégorie.</div>
+      </div>}
+    </div>
+  </div>);
+}
+
+// Pure SVG bar chart — revenue by insurance
+function BarChartByInsurance({data,totalAll}){
+  const W=720, H=240, P_L=70, P_R=20, P_T=20, P_B=40;
+  const chartW = W - P_L - P_R;
+  const chartH = H - P_T - P_B;
+  const max = Math.max(1, ...data.map(d=>d.total));
+  // Build "nice" max with rounded ticks
+  const niceMax = Math.ceil(max/10000)*10000 || 10000;
+  const ticks = 4;
+  const barColors = {'Régulier':'#5a6e67','CSU':'#2e8a5b','Academia':'#2563a8','AMC':'#c08a1d','Activa':'#8c4a8a'};
+  const barW = (chartW / data.length) * 0.6;
+  const slot = chartW / data.length;
+  return(<svg className="chart-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Revenus par catégorie d'assurance">
+    <defs>
+      {Object.entries(barColors).map(([k,c])=><linearGradient key={k} id={`bar-${k}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor={c} stopOpacity="1"/><stop offset="100%" stopColor={c} stopOpacity=".7"/>
+      </linearGradient>)}
+    </defs>
+    {/* Y axis grid */}
+    {Array.from({length:ticks+1}).map((_,i)=>{
+      const v = niceMax * i / ticks;
+      const y = P_T + chartH - (chartH * i / ticks);
+      return(<g key={i}>
+        <line x1={P_L} x2={W-P_R} y1={y} y2={y} stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray={i===0?'0':'2 4'}/>
+        <text x={P_L-10} y={y+4} textAnchor="end" fontSize="11" fill="var(--text-muted)" fontWeight="500">{Math.round(v/1000)}k</text>
+      </g>);
+    })}
+    {/* Bars */}
+    {data.map((d,i)=>{
+      const x = P_L + i*slot + (slot-barW)/2;
+      const h = (d.total / niceMax) * chartH;
+      const y = P_T + chartH - h;
+      const color = barColors[d.type] || '#5a6e67';
+      return(<g key={d.type} className="chart-bar">
+        <rect x={x} y={y} width={barW} height={h} rx="4" fill={`url(#bar-${d.type})`}/>
+        {d.total>0&&<text x={x+barW/2} y={y-6} textAnchor="middle" fontSize="11" fontWeight="700" fill={color}>{Math.round(d.total/1000)}k</text>}
+        <text x={x+barW/2} y={H-P_B+18} textAnchor="middle" fontSize="11.5" fontWeight="600" fill="var(--text)">{d.type}</text>
+        <text x={x+barW/2} y={H-P_B+32} textAnchor="middle" fontSize="10" fill="var(--text-muted)">{d.count} pat.</text>
+      </g>);
+    })}
+    {/* Y axis label */}
+    <text x={P_L-50} y={P_T+chartH/2} textAnchor="middle" fontSize="10" fill="var(--text-muted)" fontWeight="600" transform={`rotate(-90, ${P_L-50}, ${P_T+chartH/2})`} letterSpacing="1">CDF (milliers)</text>
+  </svg>);
+}
+
+// ============ ADMIN VIEW ============
+function AdminView({user,patients,setPatients,payments,inventory,staff,confidentialNotes,labOrders,onlineStaff}){
+  const [tab,setTab]=useState('dashboard');
+  const totalRevenue=payments.reduce((s,p)=>s+p.amount,0);
+  const lowStock=inventory.filter(m=>m.stock<=m.minStock).length;
+  const activePatients=patients.filter(p=>p.step<7).length;
+
+  const tabs=[
+    {id:'dashboard',icon:'fas fa-chart-pie',label:'Tableau de Bord'},
+    {id:'patients',icon:'fas fa-hospital-user',label:'Patients',count:patients.length},
+    {id:'staff',icon:'fas fa-user-tie',label:'Personnel'},
+    {id:'finance',icon:'fas fa-coins',label:'Finances'},
+    {id:'notes',icon:'fas fa-shield-halved',label:'Notes Conf.'},
+    {id:'settings',icon:'fas fa-gear',label:'Paramètres'},
+  ];
+
+  return(<DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab}>
+    {tab==='dashboard'&&(<div>
+      <div className="page-header">
+        <div>
+          <h1>{getTimeGreeting()}, {user.name}</h1>
+          <p>{CLINIC.name} — {new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+        </div>
+        <div style={{fontSize:'11px',color:'var(--text-light)'}}>{new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-icon green"><i className="fas fa-hospital-user"></i></div><div className="stat-value">{patients.length}</div><div className="stat-label">Patients enregistrés</div><div className="stat-trend"><i className="fas fa-user-clock"></i> {activePatients} en cours</div></div>
+        <div className="stat-card gold"><div className="stat-icon gold"><i className="fas fa-money-bill-wave"></i></div><div className="stat-value">{fmt(totalRevenue)}</div><div className="stat-label">Revenus du jour</div><div className="stat-trend"><i className="fas fa-receipt"></i> {payments.length} transactions</div></div>
+        <div className="stat-card info"><div className="stat-icon blue"><i className="fas fa-flask"></i></div><div className="stat-value">{labOrders.filter(o=>o.status==='pending').length}</div><div className="stat-label">Examens labo en attente</div><div className="stat-trend"><i className="fas fa-clock"></i> en cours d'analyse</div></div>
+        <div className="stat-card danger"><div className="stat-icon red"><i className="fas fa-triangle-exclamation"></i></div><div className="stat-value">{lowStock}</div><div className="stat-label">Alertes stock pharmacie</div><div className="stat-trend down"><i className="fas fa-arrow-down"></i> seuil critique</div></div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'14px'}}>
+        <div className="card">
+          <h3>Suivi des patients</h3>
+          <table><thead><tr><th>Patient</th><th>Étape</th><th>Assurance</th><th>Heure</th></tr></thead><tbody>
+          {patients.slice(0,8).map(p=><tr key={p.id}><td><strong>{p.nom} {p.prenom}</strong> {p.isNew&&<span className="badge badge-new" style={{marginLeft:'6px'}}>NEW</span>}</td><td><span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span></td><td><span className="badge badge-gold">{p.insurance}</span></td><td style={{fontSize:'11px'}}>{new Date(p.registeredAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</td></tr>)}
+          </tbody></table>
+        </div>
+        <div>
+          <div className="card">
+            <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'12px',paddingBottom:'12px',borderBottom:'1px solid #eef0ee'}}>
+              <img src={CLINIC.logo} alt="Logo" style={{width:'48px',height:'auto'}} onError={(e)=>{e.target.style.display='none'}}/>
+              <div><h3 style={{marginBottom:0}}>{CLINIC.name}</h3><p style={{fontSize:'10px',color:'var(--text-light)'}}>{CLINIC.tagline}</p></div>
+            </div>
+            <div style={{fontSize:'12px',lineHeight:'2.2',color:'var(--text)'}}>
+              {CLINIC.address}<br/>
+              Tél: {CLINIC.phone}<br/>
+              Directeur: {CLINIC.director}
+            </div>
+          </div>
+          <div className="card">
+            <h3>Services</h3>
+            {CLINIC.services.map(s=><div key={s} style={{padding:'5px 0',fontSize:'11.5px',borderBottom:'1px solid #eef0ee',color:'var(--text)'}}>{s}</div>)}
+          </div>
+        </div>
+      </div>
+    </div>)}
+
+    {tab==='patients'&&(<div>
+      <div className="page-header"><div><h1>Base de Données Patients</h1><p>{patients.length} patients enregistrés</p></div></div>
+      <div className="card"><table><thead><tr><th>ID</th><th>Nom Complet</th><th>Sexe</th><th>Téléphone</th><th>Assurance</th><th>Étape</th><th>Enregistré par</th></tr></thead><tbody>
+      {patients.map(p=><tr key={p.id}><td style={{fontFamily:'monospace',fontSize:'11px'}}>{p.id}</td><td><strong>{p.nom} {p.prenom}</strong>{p.isNew&&<span className="badge badge-new" style={{marginLeft:'6px'}}>NEW</span>}</td><td>{p.sexe}</td><td>{p.phone}</td><td><span className="badge badge-gold">{p.insurance}</span></td><td><span className={`badge ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span></td><td style={{fontSize:'11px'}}>{p.registeredBy}</td></tr>)}
+      </tbody></table></div>
+    </div>)}
+
+    {tab==='staff'&&(<div>
+      <div className="page-header"><div><h1>Gestion du Personnel</h1><p>{staff.length} agents au total — <span style={{color:'var(--accent)',fontWeight:600}}>{(onlineStaff||[]).length} en ligne</span></p></div></div>
+      <div className="stats-grid">
+        <div className="stat-card info"><div className="stat-icon blue"><i className="fas fa-user-doctor"></i></div><div className="stat-value">{staff.filter(s=>s.role==='doctor').length}</div><div className="stat-label">Médecins</div></div>
+        <div className="stat-card"><div className="stat-icon green"><i className="fas fa-user-nurse"></i></div><div className="stat-value">{staff.filter(s=>s.role==='nurse').length}</div><div className="stat-label">Infirmiers (EXP)</div></div>
+        <div className="stat-card gold"><div className="stat-icon gold"><i className="fas fa-prescription-bottle"></i></div><div className="stat-value">{staff.filter(s=>s.role==='pharmacy').length+staff.filter(s=>!s.role&&s.dept==='Pharmacie').length}</div><div className="stat-label">Pharmacie</div></div>
+        <div className="stat-card info"><div className="stat-icon blue"><i className="fas fa-vials"></i></div><div className="stat-value">{staff.filter(s=>s.role==='lab').length}</div><div className="stat-label">Laboratoire</div></div>
+        <div className="stat-card"><div className="stat-icon green"><i className="fas fa-door-open"></i></div><div className="stat-value">{staff.filter(s=>s.role==='reception'||(!s.role&&s.dept==='Réception')).length}</div><div className="stat-label">Réception</div></div>
+        <div className="stat-card danger"><div className="stat-icon red"><i className="fas fa-shield-halved"></i></div><div className="stat-value">{staff.filter(s=>!s.role&&s.dept==='Sécurité').length}</div><div className="stat-label">Sécurité</div></div>
+      </div>
+      <div className="card"><h3><i className="fas fa-user-check"></i> Agents avec accès système ({staff.filter(s=>s.username).length})</h3>
+      <table><thead><tr><th>ID</th><th>Nom Complet</th><th>Département</th><th>Titre</th><th>Rôle</th><th>Identifiant</th><th>Statut</th></tr></thead><tbody>
+      {staff.filter(s=>s.username).map(s=><tr key={s.id}><td style={{fontFamily:'monospace',fontSize:'11px'}}>{s.id}</td><td><strong>{s.name}</strong></td><td>{s.dept}</td><td>{s.title}</td><td><span className={`badge ${s.role==='admin'||s.role==='superadmin'?'badge-purple':s.role==='doctor'?'badge-blue':s.role==='nurse'?'badge-green':s.role==='pharmacy'?'badge-gold':s.role==='lab'?'badge-blue':'badge-yellow'}`}>{s.role==='superadmin'?'SUPER ADMIN':s.role}</span></td><td style={{fontFamily:'monospace',fontSize:'12px'}}>{s.username}</td><td>{(onlineStaff||[]).includes(s.id)?<span className="badge badge-green"><i className="fas fa-circle" style={{fontSize:'6px'}}></i> Actif</span>:<span className="badge" style={{background:'#e0e4e2',color:'#777'}}><i className="fas fa-circle" style={{fontSize:'6px'}}></i> Hors ligne</span>}</td></tr>)}
+      </tbody></table></div>
+      {staff.filter(s=>!s.username).length>0&&<div className="card" style={{borderLeft:'4px solid var(--warning)'}}>
+        <h3><i className="fas fa-user-clock"></i> Agents sans accès système ({staff.filter(s=>!s.username).length})</h3>
+        <table><thead><tr><th>ID</th><th>Nom Complet</th><th>Département</th><th>Titre</th><th>Statut</th></tr></thead><tbody>
+        {staff.filter(s=>!s.username).map(s=><tr key={s.id}><td style={{fontFamily:'monospace',fontSize:'11px'}}>{s.id}</td><td><strong>{s.name}</strong></td><td>{s.dept}</td><td>{s.title}</td><td><span className="badge badge-yellow"><i className="fas fa-clock" style={{fontSize:'6px'}}></i> En attente</span></td></tr>)}
+        </tbody></table>
+      </div>}
+    </div>)}
+
+    {tab==='finance'&&<PharmacyReports payments={payments}/>}
+
+    {tab==='notes'&&(<div>
+      <div className="page-header"><div><h1>Notes Confidentielles</h1><p>Accès administrateur — toutes les notes des médecins</p></div></div>
+      {confidentialNotes.length===0&&<div className="card"><p style={{color:'var(--text-light)',textAlign:'center',padding:'30px'}}>Aucune note confidentielle</p></div>}
+      {confidentialNotes.map(n=><div key={n.id} className="confidential-note">
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px'}}><strong style={{fontSize:'14px'}}>{n.patientName}</strong><span style={{fontSize:'11px',color:'var(--text-light)'}}>{new Date(n.date).toLocaleDateString('fr-FR')} {new Date(n.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+        <p style={{fontSize:'13px',lineHeight:'1.6'}}>{n.content}</p>
+        <p style={{fontSize:'11px',color:'var(--text-light)',marginTop:'8px'}}>— {n.doctorName}</p>
+      </div>)}
+    </div>)}
+
+    {tab==='settings'&&(<div>
+      <div className="page-header"><div><h1>Paramètres Système</h1></div></div>
+      <div className="card">
+        <div style={{display:'flex',alignItems:'center',gap:'16px',marginBottom:'16px'}}>
+          <img src={CLINIC.logo} alt="Logo" style={{width:'64px',height:'auto'}} onError={(e)=>{e.target.style.display='none'}}/>
+          <div><h3 style={{marginBottom:'0'}}><i className="fas fa-hospital"></i> {CLINIC.name}</h3><p style={{fontSize:'11px',color:'var(--gold)',fontStyle:'italic'}}>{CLINIC.tagline}</p></div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginTop:'12px'}}>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>NOM</label><p style={{fontWeight:600}}>{CLINIC.name}</p></div>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>ADRESSE</label><p>{CLINIC.address}</p></div>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>DIRECTEUR</label><p>{CLINIC.director}</p></div>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>TÉLÉPHONE</label><p>{CLINIC.phone}</p></div>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>NIF</label><p style={{fontFamily:'monospace'}}>{CLINIC.nif}</p></div>
+          <div><label style={{fontSize:'11px',color:'var(--text-light)',fontWeight:600}}>RCCM</label><p style={{fontFamily:'monospace'}}>{CLINIC.rccm}</p></div>
+        </div>
+      </div>
+      <div className="card">
+        <h3><i className="fas fa-palette"></i> Catégories d'Assurance</h3>
+        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',marginTop:'8px'}}>{INSURANCE_TYPES.map(t=><span key={t} className="badge badge-gold" style={{fontSize:'13px',padding:'8px 16px'}}>{t}</span>)}</div>
+        <p style={{fontSize:'12px',color:'var(--text-light)',marginTop:'12px'}}>
+          <strong>Régulier:</strong> Paiement direct | <strong>CSU:</strong> Couverture Santé Universelle (maternité) | <strong>Academia:</strong> Couverture mensuelle | <strong>AMC:</strong> Assurance Maladie Complémentaire | <strong>Activa:</strong> Paiement à l'usage, facturation mensuelle
+        </p>
+      </div>
+      <div className="card">
+        <h3><i className="fas fa-code-branch"></i> Version Système</h3>
+        <p style={{fontSize:'13px'}}>CRM Clinique The Grace of God v1.0<br/><span style={{color:'var(--text-light)',fontSize:'11px'}}>Développé sur mesure pour la gestion hospitalière complète</span></p>
+      </div>
+    </div>)}
+  </DashLayout>);
+}
+
+// ============ PATIENT DOSSIER (tabbed medical chart) ============
+function PatientDossier({patient,payments,labOrders,prescriptions,confidentialNotes,user,onClose}){
+  const pPayments=(payments||[]).filter(p=>p.patientId===patient.id);
+  const pLabs=(labOrders||[]).filter(l=>l.patientId===patient.id);
+  const pRx=(prescriptions||[]).filter(r=>r.patientId===patient.id);
+  const pNotes=(confidentialNotes||[]).filter(n=>n.patientId===patient.id);
+  const canSeeNotes=user.role==='doctor'||user.role==='admin'||user.isSuperAdmin;
+  const totalPaid=pPayments.reduce((s,p)=>s+p.amount,0);
+  const [tab,setTab]=useState('demo');
+
+  // ESC to close
+  useEffect(()=>{const k=(e)=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',k);return()=>window.removeEventListener('keydown',k);},[onClose]);
+
+  // Build timeline of all events sorted by date
+  const timeline=[
+    ...pPayments.map(p=>({...p,_type:'payment',_date:p.date,_icon:'fa-coins',_color:'var(--gold-500)'})),
+    ...pLabs.map(l=>({...l,_type:'lab',_date:l.date,_icon:'fa-flask',_color:'var(--info-500)'})),
+    ...pRx.map(r=>({...r,_type:'rx',_date:r.date,_icon:'fa-pills',_color:'var(--warning-500)'})),
+    ...(canSeeNotes?pNotes.map(n=>({...n,_type:'note',_date:n.date,_icon:'fa-lock',_color:'var(--danger-500)'})):[]),
+  ].sort((a,b)=>new Date(b._date)-new Date(a._date));
+
+  const age=patient.dob?Math.floor((new Date()-new Date(patient.dob))/31557600000)+' ans':'—';
+
+  const v = patient.vitals;
+  const triageColor = (t)=> !t?'':t.includes('Rouge')?'var(--danger-500)':t.includes('Orange')?'#e07a1c':t.includes('Jaune')?'var(--warning-500)':t.includes('Vert')?'var(--success-500)':'var(--info-500)';
+
+  const tabs=[
+    {id:'demo',label:'Identité',icon:'fa-id-card'},
+    {id:'vitals',label:'Vitaux',icon:'fa-heartbeat',count:v?1:0},
+    {id:'labo',label:'Laboratoire',icon:'fa-flask',count:pLabs.length},
+    {id:'rx',label:'Prescriptions',icon:'fa-pills',count:pRx.length},
+    {id:'pay',label:'Paiements',icon:'fa-coins',count:pPayments.length},
+    ...(canSeeNotes?[{id:'notes',label:'Notes',icon:'fa-lock',count:pNotes.length}]:[]),
+    {id:'timeline',label:'Chronologie',icon:'fa-clock-rotate-left',count:timeline.length},
+  ];
+
+  return(<div className="dossier-overlay" onClick={(e)=>{if(e.target===e.currentTarget)onClose();}} role="dialog" aria-modal="true" aria-labelledby="dossier-title">
+    <div className="dossier-panel">
+      <div className="dossier-header">
+        <div style={{display:'flex',alignItems:'center',gap:'14px',minWidth:0,flex:1}}>
+          <PatientAvatar patient={patient} size="lg"/>
+          <div style={{minWidth:0}}>
+            <h2 id="dossier-title" style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{patient.nom} {patient.prenom}</h2>
+            <div style={{fontSize:'12px',opacity:.75,marginTop:'4px',display:'flex',gap:'10px',flexWrap:'wrap'}}>
+              <span><i className="fas fa-hashtag" style={{fontSize:'9px',opacity:.6,marginRight:'3px'}}></i><span style={{fontFamily:'ui-monospace,monospace'}}>{patient.id}</span></span>
+              <span style={{opacity:.4}}>·</span>
+              <span>{patient.sexe==='M'?'Masculin':patient.sexe==='F'?'Féminin':patient.sexe}</span>
+              <span style={{opacity:.4}}>·</span>
+              <span>{age}</span>
+              <span style={{opacity:.4}}>·</span>
+              <span><i className="fas fa-phone" style={{fontSize:'9px',opacity:.6,marginRight:'3px'}}></i>{patient.phone}</span>
+            </div>
+          </div>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+          <span className={`badge ${insuranceClass(patient.insurance)}`} style={{fontSize:'12px',padding:'5px 12px',background:'rgba(255,255,255,.15)',color:'#fff',boxShadow:'inset 0 0 0 1px rgba(255,255,255,.2)'}}><i className="fas fa-shield-halved" style={{fontSize:'10px'}}></i> {patient.insurance}</span>
+          <button type="button" className="close-x" aria-label="Fermer" onClick={onClose}>×</button>
+        </div>
+      </div>
+
+      <div className="dossier-tabs" role="tablist">
+        {tabs.map(t=><div key={t.id} role="tab" aria-selected={tab===t.id} tabIndex={0} className={`dossier-tab ${tab===t.id?'active':''}`} onClick={()=>setTab(t.id)} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setTab(t.id);}}}>
+          <i className={`fas ${t.icon}`} aria-hidden="true"></i> {t.label} {t.count>0&&<span className="ct">{t.count}</span>}
+        </div>)}
+      </div>
+
+      <div className="dossier-body">
+        {/* PATIENT FLOW ALWAYS VISIBLE */}
+        <div className="dossier-section" style={{padding:'14px 16px'}}>
+          <div className="patient-flow" style={{margin:0}}>{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<patient.step?'done':''} ${i===patient.step?'current':''}`}>{s}</span>)}</div>
+        </div>
+
+        {/* DEMOGRAPHICS */}
+        {tab==='demo'&&<div className="dossier-section">
+          <h4><i className="fas fa-id-card"></i> Informations Personnelles</h4>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:'14px',fontSize:'13px'}}>
+            <Field label="Nom complet" value={`${patient.nom} ${patient.prenom}`}/>
+            <Field label="Sexe" value={patient.sexe==='M'?'Masculin':'Féminin'}/>
+            <Field label="Âge" value={age}/>
+            <Field label="Téléphone" value={patient.phone}/>
+            <Field label="Email" value={patient.email||'—'}/>
+            <Field label="Adresse" value={patient.adresse||'—'}/>
+            <Field label="Langue préférée" value={patient.langue||'Français'}/>
+            <Field label="Catégorie d'assurance" value={<span className={`badge ${insuranceClass(patient.insurance)}`} style={{padding:'4px 10px'}}>{patient.insurance}</span>}/>
+            <Field label="Médecin référent" value={patient.doctorName||<span style={{color:'var(--text-muted)'}}>Non assigné</span>}/>
+            <Field label="Motif de visite" value={patient.motif||'—'}/>
+            <Field label="Enregistré le" value={new Date(patient.registeredAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})}/>
+            <Field label="Par" value={patient.registeredBy||'—'}/>
+          </div>
+          {patient.diagnosis&&<div style={{marginTop:'18px',padding:'14px 18px',background:'var(--primary-50)',borderRadius:'var(--r-md)',borderLeft:'3px solid var(--primary-500)'}}>
+            <div style={{fontSize:'10px',fontWeight:700,color:'var(--primary-700)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:'4px'}}><i className="fas fa-stethoscope"></i> Diagnostic</div>
+            <div style={{fontSize:'14px',fontWeight:500,color:'var(--text)'}}>{patient.diagnosis}</div>
+          </div>}
+        </div>}
+
+        {/* VITALS */}
+        {tab==='vitals'&&<div className="dossier-section">
+          <h4><i className="fas fa-heartbeat"></i> Signes Vitaux</h4>
+          {!v&&<div className="empty-state" style={{padding:'40px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-heart-pulse"></i></div>
+            <div className="empty-state-title">Vitaux non enregistrés</div>
+            <div className="empty-state-body">Les signes vitaux seront saisis par l'infirmier·ère lors du passage du patient.</div>
+          </div>}
+          {v&&<>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:'10px'}}>
+              <VitalGauge icon="fa-thermometer-half" label="Température" value={v.temp} unit="°C"/>
+              <VitalGauge icon="fa-heart" label="Tension" value={v.tension}/>
+              <VitalGauge icon="fa-weight-scale" label="Poids" value={v.poids} unit="kg"/>
+              <VitalGauge icon="fa-ruler-vertical" label="Taille" value={v.taille} unit="cm"/>
+              <VitalGauge icon="fa-wave-square" label="Pouls" value={v.pouls} unit="bpm"/>
+              <VitalGauge icon="fa-lungs" label="SpO₂" value={v.spo2} unit="%"/>
+            </div>
+            {v.triage&&<div style={{marginTop:'16px',padding:'12px 16px',borderRadius:'var(--r-md)',background:'var(--ink-25)',border:'1px solid var(--border-subtle)',display:'flex',alignItems:'center',gap:'12px'}}>
+              <div style={{width:'10px',height:'10px',borderRadius:'50%',background:triageColor(v.triage),boxShadow:`0 0 0 4px ${triageColor(v.triage)}22`}}></div>
+              <div>
+                <div style={{fontSize:'10px',fontWeight:700,color:'var(--text-light)',textTransform:'uppercase',letterSpacing:'1px'}}>Classification triage</div>
+                <div style={{fontSize:'14px',fontWeight:600,color:'var(--text)',marginTop:'2px'}}>{v.triage}</div>
+              </div>
+            </div>}
+          </>}
+        </div>}
+
+        {/* LAB */}
+        {tab==='labo'&&<div className="dossier-section">
+          <h4><i className="fas fa-flask"></i> Examens de Laboratoire</h4>
+          {pLabs.length===0&&<div className="empty-state" style={{padding:'30px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-flask"></i></div>
+            <div className="empty-state-title">Aucun examen</div>
+            <div className="empty-state-body">Aucun examen de laboratoire n'a été prescrit pour ce patient.</div>
+          </div>}
+          {pLabs.map(l=><div key={l.id} style={{padding:'14px 16px',background:l.status==='completed'?'var(--success-50)':'var(--warning-50)',borderRadius:'var(--r-md)',marginBottom:'10px',border:'1px solid '+(l.status==='completed'?'var(--success-100)':'var(--warning-100)'),borderLeft:`3px solid ${l.status==='completed'?'var(--success-500)':'var(--warning-500)'}`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'12px',flexWrap:'wrap'}}>
+              <strong style={{fontSize:'13.5px'}}>{l.description}</strong>
+              <span className={`badge ${l.status==='completed'?'badge-green':'badge-yellow'}`}>{l.status==='completed'?<><i className="fas fa-check"></i> Complété</>:<><i className="fas fa-hourglass-half"></i> En attente</>}</span>
+            </div>
+            {l.results&&<div style={{marginTop:'10px',fontSize:'13px',padding:'10px 12px',background:'var(--surface)',borderRadius:'var(--r-sm)',border:'1px solid var(--border-subtle)',lineHeight:1.6}}><strong style={{color:'var(--primary-700)'}}>Résultats :</strong> {l.results}</div>}
+            <div style={{fontSize:'11px',color:'var(--text-muted)',marginTop:'8px',display:'flex',gap:'10px',flexWrap:'wrap'}}>
+              <span><i className="fas fa-user-doctor" style={{opacity:.5,marginRight:'4px'}}></i>{l.orderedBy}</span>
+              <span style={{opacity:.4}}>·</span>
+              <span><i className="fas fa-calendar" style={{opacity:.5,marginRight:'4px'}}></i>{new Date(l.date).toLocaleString('fr-FR')}</span>
+              {l.completedBy&&<><span style={{opacity:.4}}>·</span><span><i className="fas fa-flask" style={{opacity:.5,marginRight:'4px'}}></i>Traité par {l.completedBy}</span></>}
+            </div>
+          </div>)}
+        </div>}
+
+        {/* RX */}
+        {tab==='rx'&&<div className="dossier-section">
+          <h4><i className="fas fa-pills"></i> Prescriptions</h4>
+          {pRx.length===0&&<div className="empty-state" style={{padding:'30px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-prescription-bottle"></i></div>
+            <div className="empty-state-title">Aucune prescription</div>
+            <div className="empty-state-body">Aucun médicament n'a été prescrit pour ce patient.</div>
+          </div>}
+          {pRx.map(r=><div key={r.id} style={{padding:'14px 16px',background:r.dispensed?'var(--success-50)':'var(--warning-50)',borderRadius:'var(--r-md)',marginBottom:'10px',border:'1px solid '+(r.dispensed?'var(--success-100)':'var(--warning-100)'),borderLeft:`3px solid ${r.dispensed?'var(--success-500)':'var(--warning-500)'}`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'12px',flexWrap:'wrap'}}>
+              <div style={{fontSize:'13.5px',fontWeight:500,lineHeight:1.5,flex:1}}>{r.content}</div>
+              <span className={`badge ${r.dispensed?'badge-green':'badge-yellow'}`}>{r.dispensed?<><i className="fas fa-check"></i> Dispensé</>:<><i className="fas fa-hourglass-half"></i> En attente</>}</span>
+            </div>
+            <div style={{fontSize:'11px',color:'var(--text-muted)',marginTop:'8px',display:'flex',gap:'10px',flexWrap:'wrap'}}>
+              <span><i className="fas fa-user-doctor" style={{opacity:.5,marginRight:'4px'}}></i>{r.prescribedBy}</span>
+              <span style={{opacity:.4}}>·</span>
+              <span>{new Date(r.date).toLocaleString('fr-FR')}</span>
+              {r.dispensedAt&&<><span style={{opacity:.4}}>·</span><span>Dispensé à {new Date(r.dispensedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></>}
+            </div>
+          </div>)}
+        </div>}
+
+        {/* PAYMENTS */}
+        {tab==='pay'&&<div className="dossier-section">
+          <h4><i className="fas fa-coins"></i> Paiements <span style={{marginLeft:'auto',fontSize:'13px',fontWeight:700,color:'var(--gold-600)',textTransform:'none',letterSpacing:0}}>Total : {fmt(totalPaid)}</span></h4>
+          {pPayments.length===0&&<div className="empty-state" style={{padding:'30px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-receipt"></i></div>
+            <div className="empty-state-title">Aucun paiement</div>
+            <div className="empty-state-body">Aucune transaction enregistrée pour ce patient.</div>
+          </div>}
+          {pPayments.length>0&&<table style={{fontSize:'12.5px'}}><thead><tr><th>Date</th><th>Description</th><th className="num">Montant</th><th>Caissier</th></tr></thead><tbody>
+          {pPayments.map(p=><tr key={p.id}>
+            <td style={{whiteSpace:'nowrap'}}>{new Date(p.date).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td>
+            <td>{p.description}</td>
+            <td className="num" style={{fontWeight:700,color:'var(--primary-700)'}}>{fmt(p.amount)}</td>
+            <td>{p.processedBy}</td>
+          </tr>)}
+          </tbody></table>}
+        </div>}
+
+        {/* NOTES */}
+        {tab==='notes'&&canSeeNotes&&<div className="dossier-section">
+          <h4><i className="fas fa-lock"></i> Notes Confidentielles</h4>
+          {pNotes.length===0&&<div className="empty-state" style={{padding:'30px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-shield-halved"></i></div>
+            <div className="empty-state-title">Aucune note confidentielle</div>
+            <div className="empty-state-body">Les notes confidentielles ne sont visibles que par le médecin référent et l'administrateur.</div>
+          </div>}
+          {pNotes.map(n=><div key={n.id} className="confidential-note">
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><strong style={{fontSize:'13px'}}>{n.doctorName}</strong><span style={{fontSize:'10.5px',color:'var(--gold-600)',fontWeight:500}}>{new Date(n.date).toLocaleString('fr-FR')}</span></div>
+            <p style={{marginTop:'6px',fontSize:'13px',lineHeight:1.6}}>{n.content}</p>
+          </div>)}
+        </div>}
+
+        {/* TIMELINE */}
+        {tab==='timeline'&&<div className="dossier-section">
+          <h4><i className="fas fa-clock-rotate-left"></i> Chronologie Complète</h4>
+          {timeline.length===0&&<div className="empty-state" style={{padding:'30px 20px'}}>
+            <div className="empty-state-icon"><i className="fas fa-clock"></i></div>
+            <div className="empty-state-title">Aucun événement</div>
+            <div className="empty-state-body">Les événements (paiements, examens, prescriptions) apparaîtront ici au fil du parcours.</div>
+          </div>}
+          <div style={{paddingLeft:'4px'}}>
+            {timeline.map((e,i)=><div key={i} className={`timeline-item ${e._type}`}>
+              <div style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px'}}>
+                <i className={`fas ${e._icon}`} style={{color:e._color,width:'14px'}} aria-hidden="true"></i>
+                <span style={{fontWeight:600,color:'var(--text)'}}>{e._type==='payment'?`Paiement de ${fmt(e.amount)} — ${e.description}`:e._type==='lab'?`Labo : ${e.description}${e.results?' → '+e.results.substring(0,80):''}`:e._type==='rx'?`Rx : ${e.content}`:e._type==='note'?`Note : ${e.content.substring(0,80)}...`:''}</span>
+              </div>
+              <div style={{fontSize:'11px',color:'var(--text-muted)',marginTop:'4px',marginLeft:'22px'}}>{new Date(e._date).toLocaleString('fr-FR')}</div>
+            </div>)}
+          </div>
+        </div>}
+      </div>
+    </div>
+  </div>);
+}
+
+function Field({label,value}){return(<div>
+  <div style={{fontSize:'10px',fontWeight:700,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'.8px',marginBottom:'4px'}}>{label}</div>
+  <div style={{fontSize:'13px',color:'var(--text)',fontWeight:500}}>{value}</div>
+</div>);}
+
+function VitalGauge({icon,label,value,unit}){return(<div className="vital-gauge">
+  <div className="vlabel"><i className={`fas ${icon}`} aria-hidden="true"></i> {label}</div>
+  <div className="vvalue">{value||'—'}{unit&&value&&<span className="vunit">{unit}</span>}</div>
+</div>);}
+
+// ============ AI ASSISTANT ============
+function AIAssistant({user}){
+  const [open,setOpen]=useState(false);
+  const [msgs,setMsgs]=useState([{role:'bot',text:`${getTimeGreeting()} ${user.name}! Je suis l'assistant IA de la clinique. Je peux vous aider avec des questions médicales, administratives ou techniques. Comment puis-je vous aider?`}]);
+  const [input,setInput]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [pos,setPos]=useState({x:window.innerWidth-80,y:window.innerHeight-80});
+  const [dragging,setDragging]=useState(false);
+  const [hasDragged,setHasDragged]=useState(false);
+  const offsetRef=useRef({x:0,y:0});
+  const bodyRef=useRef(null);
+
+  const onMouseDown=(e)=>{
+    setDragging(true);setHasDragged(false);
+    offsetRef.current={x:e.clientX-pos.x,y:e.clientY-pos.y};
+  };
+
+  useEffect(()=>{
+    const onMove=(e)=>{if(dragging){setHasDragged(true);setPos({x:Math.max(0,Math.min(window.innerWidth-60,e.clientX-offsetRef.current.x)),y:Math.max(0,Math.min(window.innerHeight-60,e.clientY-offsetRef.current.y))});}};
+    const onUp=()=>setDragging(false);
+    window.addEventListener('mousemove',onMove);
+    window.addEventListener('mouseup',onUp);
+    return()=>{window.removeEventListener('mousemove',onMove);window.removeEventListener('mouseup',onUp);};
+  },[dragging]);
+
+  useEffect(()=>{if(bodyRef.current)bodyRef.current.scrollTop=bodyRef.current.scrollHeight;},[msgs]);
+
+  const handleClick=()=>{if(!hasDragged)setOpen(!open);};
+
+  const AI_KEY = window.__AI_KEY || '';
+  const sendMsg=async()=>{
+    if(!input.trim()||loading)return;
+    const userMsg={role:'user',text:input};
+    setMsgs(m=>[...m,userMsg]);setInput('');setLoading(true);
+    if(!AI_KEY){
+      setTimeout(()=>{
+        setMsgs(m=>[...m,{role:'bot',text:'L\'assistant IA n\'est pas configuré. Contactez l\'administrateur pour activer cette fonctionnalité.'}]);
+        setLoading(false);
+      },500);
+      return;
+    }
+    try{
+      const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${AI_KEY}`},
+        body:JSON.stringify({model:'google/gemini-2.0-flash-001',messages:[{role:'system',content:`Tu es l'assistant IA de ${CLINIC.name} à Kinshasa, RDC. Tu aides le personnel médical (utilisateur actuel: ${user.name}, rôle: ${user.title}). Réponds en français de manière concise et professionnelle. Tu connais le système CRM, les protocoles médicaux, et tu peux aider avec des questions sur les médicaments, diagnostics, et procédures administratives.`},{role:'user',content:input}]})
+      });
+      const data=await res.json();
+      setMsgs(m=>[...m,{role:'bot',text:data.choices?.[0]?.message?.content||'Désolé, erreur de traitement.'}]);
+    }catch(e){setMsgs(m=>[...m,{role:'bot',text:'Erreur de connexion. Vérifiez votre internet.'}]);}
+    setLoading(false);
+  };
+
+  return(<>
+    <div className="ai-fab" style={{left:pos.x,top:pos.y}} onMouseDown={onMouseDown} onClick={handleClick} title="Assistant IA">
+      <i className={`fas ${open?'fa-times':'fa-robot'}`}></i>
+    </div>
+    {open&&<div className="ai-panel">
+      <div className="ai-panel-header"><span><i className="fas fa-robot"></i> Assistant IA — Grace of God</span><span style={{cursor:'pointer',fontSize:'18px'}} onClick={()=>setOpen(false)}>×</span></div>
+      <div className="ai-panel-body" ref={bodyRef}>
+        {msgs.map((m,i)=><div key={i} className={`ai-msg ${m.role==='user'?'user':'bot'}`}>{m.text}</div>)}
+        {loading&&<div className="ai-msg bot"><i className="fas fa-spinner fa-spin"></i> Réflexion...</div>}
+      </div>
+      <div className="ai-panel-input">
+        <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')sendMsg()}} placeholder="Posez votre question..." disabled={loading}/>
+        <button className="btn btn-sm btn-primary" onClick={sendMsg} disabled={loading}><i className="fas fa-paper-plane"></i></button>
+      </div>
+    </div>}
+  </>);
+}
+
+// ============ RENDER ============
+ReactDOM.render(<ToastProvider><App/></ToastProvider>,document.getElementById('root'));
+</script>
+</body>
+</html>

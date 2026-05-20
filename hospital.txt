@@ -1,0 +1,111 @@
+- add patient file upload (connected to an apoinintemtn displaued, why theyre here, )
+- create patient profile
+- 
+
+patient walkthroughj
+ 
+login (front desk) 
+register patient
+pay
+nurse: access all, vitals, gets vocal consultationfrom nurse. 
+receive papers for rubric 
+pay
+doctor: doctor has access to all the information (create a rubric) 
+  
+   pay at pharmacy
+
+lab: 
+access to work order(ensure patient privacy)
+*lab resutls must be available to doctor
+--file upload for now and description 
+
+prescription: 
+pay at pharmacy
+doctor: doctor has access to all the information (create a rubric)
+ - IDENTIFY WHAT THE PATient has paid for, the doctor can ensure tha lab results
+ are already paid for before further consultaion. paid for follow up 
+
+- Pay for consult 
+- get consulted 
+- green light 
+
+
+- pharmacy pannel comfirms payments.
+
+Release forms: doctor
+
+
+admin access to everything
+
+
+
+To expect:
+
+- financial form 
+- accouting 
+
+
+
+-data, data, data
+
+the front desk asks for phone numbers and emails and prefered language or sth and we use it 
+to notify users when there are new vaccines, when their prescriptions are 
+to be refilled, 
+
+medical visit history for patient, nurse, doctor.
+
+front desk
+
+
+different type of patients, csu, academia, 
+
+enter categories to change the way patients are filt
+ered through. 
+
+csu: selected category, takes them to csu database
+
+academia, amc : submit data reports every months, bill monthly 
+
+
+patient type, pharmacy 
+front desk categorize. 
+
+front desk can mention what category the person is,
+its going to be pending until confirmed
+
+csu status expires and renews (set time limit), 
+every trimester there should be an ultra sound. and overdue ultrasound should be notifiesd 
+c section or natural birth, reminders.
+
+one free ultrasoune the two others they have to pay for, to provide more information
+
+
+bill (insurance, company,...), paid for regular patients
+
+
+records.
+------------------------------------------
+
+CSU - takes over process after regular consultation and
+      confirmation of pregnancy (1 free ultrasound), 
+      pharmacy can notify paid by csu. pregnancy determined
+      at doctor and/or pharmacy level and CSU. 
+      -first consultaion
+      -lab test 
+      - ultrasound
+
+
+activa: pays per use, create monthly invoice (1-30)
+        submitted before the 5th, accumulated data 
+        for this type must be concatenated for mohtnly 
+        financial report
+
+
+academia: Insurance coverage, Monthly
+
+
+   
+
+
+
+
