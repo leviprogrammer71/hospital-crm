@@ -700,7 +700,7 @@ function EditPatientModal({patient,patients,setPatients,onClose}){
     try{
       const {error}=await supabase.from('patients').update({nom:form.nom.trim(),prenom:form.prenom.trim(),phone:form.phone.trim(),email:form.email.trim(),insurance:form.insurance,sexe:form.sexe,adresse:form.adresse.trim(),langue:form.langue,motif:form.motif.trim()}).eq('id',patient.id);
       if(error)throw error;
-      setPatients(patients.map(p=>p.id===patient.id?{...p,...form}:p));
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,...form}:p));
       toast.success('Patient mis à jour');onClose();
     }catch(e){toast.error('Erreur: '+(e.message||''));}
     setSaving(false);
@@ -883,7 +883,6 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
   const [saving,setSaving]=useState(false);
   const [searchQ,setSearchQ]=useState('');
   const [foundPatient,setFoundPatient]=useState(null);
-  const [hospModal,setHospModal]=useState(null);
   const today=patients.filter(p=>new Date(p.registeredAt).toDateString()===new Date().toDateString());
 
   // Search existing patient
@@ -898,7 +897,7 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
       const now=new Date().toISOString();
       const {error}=await supabase.from('patients').update({step:1,step_label:'Pharmacie (Consultation)',registered_at:now,registered_by:user.name,is_new:false}).eq('id',p.id);
       if(error)throw error;
-      setPatients(patients.map(x=>x.id===p.id?{...x,step:1,stepLabel:'Pharmacie (Consultation)',registeredAt:now,registeredBy:user.name,isNew:false}:x));
+      setPatients(prev=>prev.map(x=>x.id===p.id?{...x,step:1,stepLabel:'Pharmacie (Consultation)',registeredAt:now,registeredBy:user.name,isNew:false}:x));
       toast.success(`${p.nom} ${p.prenom} ré-admis aujourd'hui`);
       setFoundPatient(null);setSearchQ('');setTab('list');
     }catch(e){toast.error('Erreur: '+(e.message||''));}
@@ -912,22 +911,12 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
       const newP={id:genId(),nom:form.nom.trim(),prenom:form.prenom.trim(),phone:form.phone.trim(),email:form.email.trim(),sexe:form.sexe,dob:form.dob||null,langue:form.langue,adresse:form.adresse.trim(),motif:form.motif.trim(),insurance:form.insurance,step:1,stepLabel:'Pharmacie (Consultation)',registeredAt:new Date().toISOString(),registeredBy:user.name,vitals:null,isNew:true};
       const {error}=await supabase.from('patients').insert({id:newP.id,nom:newP.nom,prenom:newP.prenom,phone:newP.phone,email:newP.email,sexe:newP.sexe,dob:newP.dob,langue:newP.langue,adresse:newP.adresse,motif:newP.motif,insurance:newP.insurance,step:1,step_label:'Pharmacie (Consultation)',registered_at:newP.registeredAt,registered_by:user.name,is_new:true});
       if(error)throw error;
-      setPatients([newP,...patients]);
+      setPatients(prev=>[newP,...prev]);
       setForm({nom:'',prenom:'',phone:'',email:'',sexe:'M',dob:'',langue:'Français',adresse:'',motif:'',insurance:'Régulier'});
       toast.success(`${newP.nom} ${newP.prenom} enregistré → Pharmacie`);
       setTab('list');
     }catch(e){toast.error('Erreur: '+(e.message||''));}
     setSaving(false);
-  };
-
-  const requestHosp=async(hospData)=>{
-    try{
-      const {error}=await supabase.from('patients').update({hospitalization:hospData}).eq('id',hospData.patientId);
-      if(error)throw error;
-      setPatients(patients.map(p=>p.id===hospData.patientId?{...p,hospitalization:hospData}:p));
-      toast.success(`Hospitalisation demandée — Chambre ${hospData.room}`);
-      setHospModal(null);
-    }catch(e){toast.error('Erreur hospitalisation: '+(e.message||''));}
   };
 
   const tabs=[
@@ -995,7 +984,6 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
               </div>
               <div style={{display:'flex',gap:8}}>
                 <button className="btn btn-success" onClick={()=>readmitPatient(p)}><i className="fas fa-rotate-right"></i> Ré-admettre aujourd'hui</button>
-                <button className="btn btn-outline btn-sm" onClick={()=>setHospModal(p)}><i className="fas fa-bed"></i> Hospitaliser</button>
               </div>
             </div>
             {p.motif&&<div style={{marginTop:10,fontSize:'12px',padding:'8px 12px',background:'var(--primary-50)',borderRadius:'var(--r-sm)',borderLeft:'3px solid var(--primary-400)'}}><strong>Dernier motif:</strong> {p.motif}</div>}
@@ -1022,8 +1010,8 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
     </div>}
 
     {tab==='hosp'&&<div>
-      <div className="page-header"><div><h1>Hospitalisations</h1><p>{hospitalized.length} patient(s) hospitalisé(s)</p></div></div>
-      {!hospitalized.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-bed"></i></div><div className="empty-state-title">Aucune hospitalisation</div><div className="empty-state-body">Les patients hospitalisés apparaissent ici.</div></div></div>}
+      <div className="page-header"><div><h1>Hospitalisations</h1><p>{hospitalized.length} patient(s) hospitalisé(s) — gérées par les médecins</p></div></div>
+      {!hospitalized.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-bed"></i></div><div className="empty-state-title">Aucune hospitalisation</div><div className="empty-state-body">L'hospitalisation est décidée par le médecin lors de la consultation.</div></div></div>}
       {hospitalized.map(p=><div key={p.id} className="hosp-card" style={{marginBottom:12,padding:'14px 16px'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:10}}>
           <div style={{display:'flex',gap:12,alignItems:'center'}}>
@@ -1035,33 +1023,32 @@ function ReceptionView({user,patients,setPatients,payments,labOrders,prescriptio
                 <span style={{background:'#e0f2fe',color:'#0369a1',padding:'3px 10px',borderRadius:20,fontSize:'11px',fontWeight:600}}><i className="fas fa-bed"></i> Chambre {p.hospitalization.room}</span>
                 <InsuranceBadge type={p.insurance} size="badge-sm"/>
                 <span className={`badge badge-sm ${p.step===7?'badge-green':'badge-blue'}`}>{p.stepLabel}</span>
+                <span className={`badge badge-sm ${p.hospitalization.status==='active'?'badge-blue':p.hospitalization.status==='discharge_pending'?'badge-yellow':'badge-green'}`}>{p.hospitalization.status==='active'?'En cours':p.hospitalization.status==='discharge_pending'?'Sortie en attente paiement':'Sorti'}</span>
               </div>
             </div>
           </div>
           <div style={{fontSize:'12px',color:'var(--text-muted)',textAlign:'right'}}>
-            <div>Admis par {p.hospitalization.admittedBy}</div>
+            <div>Admis par {p.hospitalization.admittedBy} (Médecin)</div>
             <div>{new Date(p.hospitalization.admittedAt).toLocaleString('fr-FR')}</div>
             {p.hospitalization.reason&&<div style={{marginTop:4,fontStyle:'italic'}}>Raison: {p.hospitalization.reason}</div>}
           </div>
         </div>
       </div>)}
     </div>}
-
-    {hospModal&&<HospitalizationModal patient={hospModal} requestedBy={user.name} onConfirm={requestHosp} onClose={()=>setHospModal(null)}/>}
   </DashLayout>;
 }
 
-/* ===== HOSPITALIZATION MODAL ===== */
-function HospitalizationModal({patient,requestedBy,onConfirm,onClose}){
+/* ===== HOSPITALIZATION MODAL (Doctor only — admit) ===== */
+function HospitalizationModal({patient,requestedBy,requestedById,onConfirm,onClose}){
   const [room,setRoom]=useState('');
   const [reason,setReason]=useState('');
   const save=()=>{
     if(!room.trim()){alert('Numéro de chambre requis');return;}
-    onConfirm({patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,room:room.trim(),reason:reason.trim(),admittedBy:requestedBy,admittedAt:new Date().toISOString(),status:'active'});
+    onConfirm({patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,room:room.trim(),reason:reason.trim(),admittedBy:requestedBy,admittedById:requestedById,admittedAt:new Date().toISOString(),status:'active',acts:[]});
   };
   return <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
     <div className="modal">
-      <h2><i className="fas fa-bed" style={{color:'#0891b2'}}></i> Demande d'hospitalisation</h2>
+      <h2><i className="fas fa-bed" style={{color:'#0891b2'}}></i> Hospitaliser le patient</h2>
       <div style={{padding:'14px 16px',background:'#e0f2fe',borderRadius:'var(--r-md)',border:'1px solid #0891b2',marginBottom:20}}>
         <div style={{fontWeight:700}}>{patient.nom} {patient.prenom}</div>
         <div style={{fontSize:'12px',color:'#0369a1',marginTop:4}}>{patient.phone} · <InsuranceBadge type={patient.insurance} size="badge-sm"/></div>
@@ -1076,10 +1063,37 @@ function HospitalizationModal({patient,requestedBy,onConfirm,onClose}){
   </div>;
 }
 
+/* ===== ROOM EDIT MODAL (Nurse or Doctor) ===== */
+function RoomEditModal({patient,user,patients,setPatients,onClose,toast}){
+  const [room,setRoom]=useState(patient.hospitalization?.room||'');
+  const save=async()=>{
+    if(!room.trim()){toast.error('Numéro de chambre requis.');return;}
+    try{
+      const updatedHosp={...patient.hospitalization,room:room.trim(),roomUpdatedBy:user.name,roomUpdatedAt:new Date().toISOString()};
+      const {error}=await supabase.from('patients').update({hospitalization:updatedHosp}).eq('id',patient.id);
+      if(error)throw error;
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,hospitalization:updatedHosp}:p));
+      toast.success('Chambre mise à jour');onClose();
+    }catch(e){toast.error('Erreur: '+(e.message||''));}
+  };
+  return <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+    <div className="modal">
+      <h2><i className="fas fa-bed"></i> Modifier la chambre</h2>
+      <div style={{marginBottom:14,fontSize:'13px',color:'var(--text-light)'}}>{patient.nom} {patient.prenom}</div>
+      <div className="form-group"><label>Numéro de chambre</label><input value={room} onChange={e=>setRoom(e.target.value)} placeholder="Ex: 12, 3A..."/></div>
+      <div style={{display:'flex',gap:10,marginTop:14}}>
+        <button className="btn btn-info" onClick={save}><i className="fas fa-save"></i> Enregistrer</button>
+        <button className="btn btn-outline" onClick={onClose}>Annuler</button>
+      </div>
+    </div>
+  </div>;
+}
+
 /* ===== NURSE VIEW ===== */
 function NurseView({user,patients,setPatients,labOrders,payments,prescriptions,files,toast}){
   const [tab,setTab]=useState('queue');
   const [dossier,setDossier]=useState(null);
+  const [roomEdit,setRoomEdit]=useState(null);
   const myPatients=patients.filter(p=>p.step===2);
   // After lab: patients who just got results back and need to go to doctor
   const labReturnPatients=patients.filter(p=>p.step===2&&p.fromLab);
@@ -1090,7 +1104,7 @@ function NurseView({user,patients,setPatients,labOrders,payments,prescriptions,f
       const {error}=await supabase.from('vitals').insert({patient_id:pid,temp:vitals.temp,tension:vitals.tension,poids:vitals.poids,taille:vitals.taille,pouls:vitals.pouls,spo2:vitals.spo2,triage:vitals.triage,recorded_by:user.name});
       if(error)throw error;
       await supabase.from('patients').update({step:3,step_label:'Médecin',is_new:false}).eq('id',pid);
-      setPatients(patients.map(p=>p.id===pid?{...p,vitals,step:3,stepLabel:'Médecin',isNew:false}:p));
+      setPatients(prev=>prev.map(p=>p.id===pid?{...p,vitals,step:3,stepLabel:'Médecin',isNew:false}:p));
       toast.success('Vitaux enregistrés → Médecin');
     }catch(e){toast.error('Erreur: '+(e.message||''));}
   };
@@ -1098,12 +1112,13 @@ function NurseView({user,patients,setPatients,labOrders,payments,prescriptions,f
   const sendToDoctor=async(pid)=>{
     try{
       await supabase.from('patients').update({step:3,step_label:'Médecin (Résultats Labo)',from_lab:false}).eq('id',pid);
-      setPatients(patients.map(p=>p.id===pid?{...p,step:3,stepLabel:'Médecin (Résultats Labo)',fromLab:false}:p));
+      setPatients(prev=>prev.map(p=>p.id===pid?{...p,step:3,stepLabel:'Médecin (Résultats Labo)',fromLab:false}:p));
       toast.success('Patient envoyé au médecin avec résultats');
     }catch(e){toast.error('Erreur: '+(e.message||''));}
   };
 
-  // Hospitalized nursing acts
+  // Hospitalized nursing acts — nurse can record acts and update vitals for hospitalized patients,
+  // and can correct the room number, but cannot discharge (doctor-only).
   const hospPatients=patients.filter(p=>p.hospitalization&&p.hospitalization.status==='active');
 
   const tabs=[
@@ -1120,9 +1135,9 @@ function NurseView({user,patients,setPatients,labOrders,payments,prescriptions,f
     </div>}
 
     {tab==='hosp_acts'&&<div>
-      <div className="page-header"><div><h1>Actes d'Hospitalisation</h1><p>Soins infirmiers pour patients hospitalisés</p></div></div>
+      <div className="page-header"><div><h1>Actes d'Hospitalisation</h1><p>Soins infirmiers, vitaux et chambre pour patients hospitalisés (la sortie est décidée par le médecin)</p></div></div>
       {!hospPatients.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-bed"></i></div><div className="empty-state-title">Aucun patient hospitalisé</div></div></div>}
-      {hospPatients.map(p=><HospActCard key={p.id} patient={p} user={user} payments={payments} setPatients={setPatients} patients={patients} toast={toast}/>)}
+      {hospPatients.map(p=><HospActCard key={p.id} patient={p} user={user} payments={payments} setPatients={setPatients} patients={patients} toast={toast} onEditRoom={setRoomEdit} onDossier={setDossier} canDischarge={false}/>)}
     </div>}
 
     {tab==='all'&&<div>
@@ -1142,6 +1157,7 @@ function NurseView({user,patients,setPatients,labOrders,payments,prescriptions,f
     </div>}
 
     {dossier&&<PatientDossier patient={dossier} payments={payments} labOrders={labOrders} prescriptions={prescriptions} confidentialNotes={[]} files={files} user={user} patients={patients} setPatients={setPatients} onClose={()=>setDossier(null)}/>}
+    {roomEdit&&<RoomEditModal patient={roomEdit} user={user} patients={patients} setPatients={setPatients} onClose={()=>setRoomEdit(null)} toast={toast}/>}
   </DashLayout>;
 }
 
@@ -1189,11 +1205,13 @@ function NursePatientCard({patient,onSave,onSendToDoctor,onViewDossier,labOrders
   </div>;
 }
 
-/* ===== HOSPITALIZATION ACT CARD ===== */
-function HospActCard({patient,user,payments,setPatients,patients,toast}){
+/* ===== HOSPITALIZATION ACT CARD (Nurse: vitals, acts, room. No discharge.) ===== */
+function HospActCard({patient,user,payments,setPatients,patients,toast,onEditRoom,onDossier,canDischarge}){
   const [act,setAct]=useState('');
   const [price,setPrice]=useState('');
   const [saving,setSaving]=useState(false);
+  const [v,setV]=useState({temp:'',tension:'',poids:'',pouls:'',spo2:''});
+  const [savingVitals,setSavingVitals]=useState(false);
 
   const saveAct=async()=>{
     if(!act.trim()){toast.warning('Décrivez l\'acte infirmier.');return;}
@@ -1205,36 +1223,78 @@ function HospActCard({patient,user,payments,setPatients,patients,toast}){
       const updatedHosp={...patient.hospitalization,acts:[...existingActs,newAct]};
       const {error}=await supabase.from('patients').update({hospitalization:updatedHosp}).eq('id',patient.id);
       if(error)throw error;
-      setPatients(patients.map(p=>p.id===patient.id?{...p,hospitalization:updatedHosp}:p));
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,hospitalization:updatedHosp}:p));
       setAct('');setPrice('');
       toast.success('Acte infirmier enregistré');
     }catch(e){toast.error('Erreur: '+(e.message||''));}
     setSaving(false);
   };
 
+  const saveVitals=async()=>{
+    if(!v.temp&&!v.tension&&!v.poids&&!v.pouls&&!v.spo2){toast.warning('Renseignez au moins une valeur.');return;}
+    setSavingVitals(true);
+    try{
+      const merged={...(patient.vitals||{}),...Object.fromEntries(Object.entries(v).filter(([,val])=>val!==''))};
+      await supabase.from('vitals').insert({patient_id:patient.id,temp:merged.temp,tension:merged.tension,poids:merged.poids,taille:merged.taille||patient.vitals?.taille,pouls:merged.pouls,spo2:merged.spo2,triage:patient.vitals?.triage,recorded_by:user.name});
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,vitals:merged}:p));
+      setV({temp:'',tension:'',poids:'',pouls:'',spo2:''});
+      toast.success('Vitaux mis à jour (hospitalisation)');
+    }catch(e){toast.error('Erreur vitaux: '+(e.message||''));}
+    setSavingVitals(false);
+  };
+
   const acts=patient.hospitalization?.acts||[];
   const totalActs=acts.reduce((s,a)=>s+a.price,0);
+  const hospStatus=patient.hospitalization?.status;
   return <div className="hosp-card" style={{marginBottom:12,padding:'16px'}}>
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:12}}>
       <div>
         <div style={{fontWeight:700,fontSize:'14px',display:'flex',alignItems:'center',gap:8}}><PatientAvatar patient={patient} size="sm"/> {patient.nom} {patient.prenom}</div>
-        <div style={{fontSize:'12px',color:'#0369a1',marginTop:4}}><i className="fas fa-bed"></i> Chambre {patient.hospitalization.room} · {patient.phone}</div>
-        <div style={{marginTop:6}}><InsuranceBadge type={patient.insurance} size="badge-sm"/></div>
+        <div style={{fontSize:'12px',color:'#0369a1',marginTop:4,display:'flex',alignItems:'center',gap:8}}>
+          <span><i className="fas fa-bed"></i> Chambre {patient.hospitalization.room}</span>
+          {onEditRoom&&<button className="btn btn-sm btn-outline" style={{padding:'2px 8px'}} onClick={()=>onEditRoom(patient)}><i className="fas fa-pen" style={{fontSize:'10px'}}></i></button>}
+          <span>· {patient.phone}</span>
+        </div>
+        <div style={{marginTop:6,display:'flex',gap:6,flexWrap:'wrap'}}>
+          <InsuranceBadge type={patient.insurance} size="badge-sm"/>
+          <span className={`badge badge-sm ${hospStatus==='active'?'badge-blue':hospStatus==='discharge_pending'?'badge-yellow':'badge-green'}`}>{hospStatus==='active'?'En cours':hospStatus==='discharge_pending'?'Sortie en attente':'Sorti'}</span>
+        </div>
       </div>
-      <div style={{fontSize:'12px',color:'var(--text-muted)',textAlign:'right'}}>
-        {acts.length} acte(s) · Total: <strong style={{color:'var(--primary)'}}>{fmt(totalActs)}</strong>
+      <div style={{display:'flex',gap:8,alignItems:'flex-start'}}>
+        {onDossier&&<button className="btn btn-sm btn-primary" onClick={()=>onDossier(patient)}><i className="fas fa-folder-open"></i></button>}
+        <div style={{fontSize:'12px',color:'var(--text-muted)',textAlign:'right'}}>
+          {acts.length} acte(s) · Total: <strong style={{color:'var(--primary)'}}>{fmt(totalActs)}</strong>
+        </div>
       </div>
     </div>
+
+    {patient.vitals&&<div style={{marginTop:10,background:'rgba(255,255,255,.6)',borderRadius:'var(--r-sm)',padding:'8px 12px',fontSize:'12px'}}>
+      <strong>Derniers vitaux:</strong> T° {patient.vitals.temp||'—'}°C | TA: {patient.vitals.tension||'—'} | Poids: {patient.vitals.poids||'—'}kg | Pouls: {patient.vitals.pouls||'—'}bpm | SpO₂: {patient.vitals.spo2||'—'}%
+    </div>}
+
     {acts.length>0&&<div style={{marginTop:10,background:'rgba(255,255,255,.5)',borderRadius:'var(--r-sm)',padding:'8px 12px'}}>
       {acts.map(a=><div key={a.id} style={{display:'flex',justifyContent:'space-between',fontSize:'12px',padding:'3px 0',borderBottom:'1px dashed rgba(0,0,0,.1)'}}>
         <span>{a.description} <span style={{color:'var(--text-muted)'}}>— {a.by}</span></span>
         <span style={{fontWeight:600}}>{a.price>0?fmt(a.price):'—'} {a.paid?<span style={{color:'green'}}> ✓</span>:''}</span>
       </div>)}
     </div>}
+
     <div style={{marginTop:12,display:'flex',gap:8}}>
-      <input style={{flex:2,padding:'8px 12px',border:'1px solid var(--border)',borderRadius:'var(--r-md)',fontSize:'13px'}} value={act} onChange={e=>setAct(e.target.value)} placeholder="Acte infirmier (pansement, injection, perfusion...)"/>
+      <input style={{flex:2,padding:'8px 12px',border:'1px solid var(--border)',borderRadius:'var(--r-md)',fontSize:'13px'}} value={act} onChange={e=>setAct(e.target.value)} placeholder="Acte infirmier (pansement, injection, perfusion, nettoyage de plaie...)"/>
       <input style={{width:130,padding:'8px 12px',border:'1px solid var(--border)',borderRadius:'var(--r-md)',fontSize:'13px'}} type="number" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Prix CDF"/>
       <button className={`btn btn-success btn-sm ${saving?'loading':''}`} onClick={saveAct} disabled={saving}><i className="fas fa-plus"></i> Ajouter</button>
+    </div>
+
+    <div style={{marginTop:14,paddingTop:12,borderTop:'1px dashed rgba(0,0,0,.12)'}}>
+      <div style={{fontSize:'11px',fontWeight:700,color:'#0369a1',marginBottom:8,textTransform:'uppercase',letterSpacing:'.5px'}}><i className="fas fa-heartbeat"></i> Mettre à jour les vitaux</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8}}>
+        <input value={v.temp} onChange={e=>setV({...v,temp:e.target.value})} placeholder="T° 36.5" style={{padding:'7px 9px',border:'1px solid var(--border)',borderRadius:'var(--r-sm)',fontSize:'12px'}}/>
+        <input value={v.tension} onChange={e=>setV({...v,tension:e.target.value})} placeholder="TA 120/80" style={{padding:'7px 9px',border:'1px solid var(--border)',borderRadius:'var(--r-sm)',fontSize:'12px'}}/>
+        <input value={v.poids} onChange={e=>setV({...v,poids:e.target.value})} placeholder="Poids" style={{padding:'7px 9px',border:'1px solid var(--border)',borderRadius:'var(--r-sm)',fontSize:'12px'}}/>
+        <input value={v.pouls} onChange={e=>setV({...v,pouls:e.target.value})} placeholder="Pouls" style={{padding:'7px 9px',border:'1px solid var(--border)',borderRadius:'var(--r-sm)',fontSize:'12px'}}/>
+        <input value={v.spo2} onChange={e=>setV({...v,spo2:e.target.value})} placeholder="SpO₂" style={{padding:'7px 9px',border:'1px solid var(--border)',borderRadius:'var(--r-sm)',fontSize:'12px'}}/>
+      </div>
+      <button className={`btn btn-sm btn-info ${savingVitals?'loading':''}`} style={{marginTop:8}} onClick={saveVitals} disabled={savingVitals}><i className="fas fa-heartbeat"></i> Enregistrer Vitaux</button>
     </div>
   </div>;
 }
@@ -1245,6 +1305,8 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
   const [dossier,setDossier]=useState(null);
   const [editP,setEditP]=useState(null);
   const [showNotifs,setShowNotifs]=useState(false);
+  const [hospModal,setHospModal]=useState(null);
+  const [roomEdit,setRoomEdit]=useState(null);
   const activeQueue=patients.filter(p=>p.step===3);
   const myOngoing=patients.filter(p=>p.doctorId===user.id&&p.step!==3&&p.step<7);
   const myDone=patients.filter(p=>p.doctorId===user.id&&p.step===7);
@@ -1256,6 +1318,16 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
     setNotifications(prev=>prev.map(n=>n.forDoctorId===user.id?{...n,read:true}:n));
   };
 
+  const admitToHosp=async(hospData)=>{
+    try{
+      const {error}=await supabase.from('patients').update({hospitalization:hospData}).eq('id',hospData.patientId);
+      if(error)throw error;
+      setPatients(prev=>prev.map(p=>p.id===hospData.patientId?{...p,hospitalization:hospData}:p));
+      toast.success(`Patient hospitalisé — Chambre ${hospData.room}`);
+      setHospModal(null);
+    }catch(e){toast.error('Erreur hospitalisation: '+(e.message||''));}
+  };
+
   const tabs=[
     {id:'queue',icon:'fas fa-stethoscope',label:'Consultations',count:activeQueue.length},
     {id:'mypatients',icon:'fas fa-user-doctor',label:'Mes Patients',count:myOngoing.length},
@@ -1264,6 +1336,7 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
   ];
 
   const hospPatients=patients.filter(p=>p.doctorId===user.id&&p.hospitalization?.status==='active');
+  const hospPendingDischarge=patients.filter(p=>p.doctorId===user.id&&p.hospitalization?.status==='discharge_pending');
 
   return <DashLayout user={user} tabs={tabs} activeTab={tab} setActiveTab={setTab} topRight={
     <div style={{position:'relative'}}>
@@ -1293,7 +1366,7 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
     {tab==='queue'&&<div>
       <div className="page-header"><div><h1>Consultations</h1><p>{activeQueue.length} patient(s) à voir</p></div></div>
       {!activeQueue.length&&<div className="card" style={{textAlign:'center',padding:30}}><p style={{color:'var(--text-light)',fontSize:'16px'}}>Aucun patient en attente</p></div>}
-      {activeQueue.map(p=><DoctorConsultCard key={p.id} patient={p} user={user} patients={patients} setPatients={setPatients} labOrders={labOrders} setLabOrders={setLabOrders} confidentialNotes={confidentialNotes} setConfidentialNotes={setConfidentialNotes} prescriptions={prescriptions} setPrescriptions={setPrescriptions} payments={payments} addNotification={addNotification} files={files} setFiles={setFiles} onDossier={setDossier} onEdit={setEditP} toast={toast}/>)}
+      {activeQueue.map(p=><DoctorConsultCard key={p.id} patient={p} user={user} patients={patients} setPatients={setPatients} labOrders={labOrders} setLabOrders={setLabOrders} confidentialNotes={confidentialNotes} setConfidentialNotes={setConfidentialNotes} prescriptions={prescriptions} setPrescriptions={setPrescriptions} payments={payments} addNotification={addNotification} files={files} setFiles={setFiles} onDossier={setDossier} onEdit={setEditP} onHospitalize={setHospModal} toast={toast}/>)}
     </div>}
 
     {tab==='mypatients'&&<div>
@@ -1314,9 +1387,18 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
     </div>}
 
     {tab==='hosp'&&<div>
-      <div className="page-header"><div><h1>Mes Patients Hospitalisés</h1></div></div>
-      {!hospPatients.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-bed"></i></div><div className="empty-state-title">Aucun patient hospitalisé</div></div></div>}
-      {hospPatients.map(p=><DoctorHospCard key={p.id} patient={p} user={user} patients={patients} setPatients={setPatients} labOrders={labOrders} setLabOrders={setLabOrders} prescriptions={prescriptions} setPrescriptions={setPrescriptions} addNotification={addNotification} onDossier={setDossier} toast={toast}/>)}
+      <div className="page-header"><div><h1>Mes Patients Hospitalisés</h1><p>Vous pouvez prescrire, demander des examens, modifier les informations, et décider de la sortie. La sortie finale dépend du paiement en pharmacie.</p></div></div>
+      {!hospPatients.length&&!hospPendingDischarge.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-bed"></i></div><div className="empty-state-title">Aucun patient hospitalisé</div></div></div>}
+      {hospPendingDischarge.length>0&&<>
+        <h3 style={{margin:'4px 0 10px',color:'var(--gold-600)'}}><i className="fas fa-hourglass-half"></i> En attente de paiement (Pharmacie)</h3>
+        {hospPendingDischarge.map(p=><div key={p.id} className="hosp-card" style={{marginBottom:10,padding:'12px 16px',borderColor:'var(--gold-500)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+            <div style={{display:'flex',gap:10,alignItems:'center'}}><PatientAvatar patient={p} size="sm"/><div><strong>{p.nom} {p.prenom}</strong><div style={{fontSize:'11px',color:'var(--text-muted)'}}>Chambre {p.hospitalization.room} · En attente du paiement final en pharmacie</div></div></div>
+            <span className="badge badge-yellow">Sortie en attente de paiement</span>
+          </div>
+        </div>)}
+      </>}
+      {hospPatients.map(p=><DoctorHospCard key={p.id} patient={p} user={user} patients={patients} setPatients={setPatients} labOrders={labOrders} setLabOrders={setLabOrders} prescriptions={prescriptions} setPrescriptions={setPrescriptions} addNotification={addNotification} onDossier={setDossier} onEditRoom={setRoomEdit} toast={toast}/>)}
     </div>}
 
     {tab==='notes'&&<div>
@@ -1330,11 +1412,13 @@ function DoctorView({user,patients,setPatients,labOrders,setLabOrders,confidenti
 
     {dossier&&<PatientDossier patient={dossier} payments={payments} labOrders={labOrders} prescriptions={prescriptions} confidentialNotes={confidentialNotes} files={files} user={user} patients={patients} setPatients={setPatients} onClose={()=>setDossier(null)}/>}
     {editP&&<EditPatientModal patient={editP} patients={patients} setPatients={setPatients} onClose={()=>setEditP(null)}/>}
+    {hospModal&&<HospitalizationModal patient={hospModal} requestedBy={user.name} requestedById={user.id} onConfirm={admitToHosp} onClose={()=>setHospModal(null)}/>}
+    {roomEdit&&<RoomEditModal patient={roomEdit} user={user} patients={patients} setPatients={setPatients} onClose={()=>setRoomEdit(null)} toast={toast}/>}
   </DashLayout>;
 }
 
 /* ===== DOCTOR CONSULT CARD ===== */
-function DoctorConsultCard({patient,user,patients,setPatients,labOrders,setLabOrders,confidentialNotes,setConfidentialNotes,prescriptions,setPrescriptions,payments,addNotification,files,setFiles,onDossier,onEdit,toast}){
+function DoctorConsultCard({patient,user,patients,setPatients,labOrders,setLabOrders,confidentialNotes,setConfidentialNotes,prescriptions,setPrescriptions,payments,addNotification,files,setFiles,onDossier,onEdit,onHospitalize,toast}){
   const [insurance,setInsurance]=useState(patient.insurance);
   const [diagnosis,setDiagnosis]=useState(patient.diagnosis||'');
   const [note,setNote]=useState('');
@@ -1345,7 +1429,7 @@ function DoctorConsultCard({patient,user,patients,setPatients,labOrders,setLabOr
   const pPay=(payments||[]).filter(p=>p.patientId===patient.id);
 
   const assignIns=async()=>{
-    try{await supabase.from('patients').update({insurance}).eq('id',patient.id);setPatients(patients.map(p=>p.id===patient.id?{...p,insurance}:p));toast.success('Assurance mise à jour: '+insurance);}catch(e){toast.error('Erreur assurance');}
+    try{await supabase.from('patients').update({insurance}).eq('id',patient.id);setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,insurance}:p));toast.success('Assurance mise à jour: '+insurance);}catch(e){toast.error('Erreur assurance');}
   };
   const addNote=async()=>{
     if(!note.trim()){toast.warning('Note vide.');return;}
@@ -1377,7 +1461,7 @@ function DoctorConsultCard({patient,user,patients,setPatients,labOrders,setLabOr
   const sendTo=async(step,label,sendBackToPharm=false)=>{
     try{
       await supabase.from('patients').update({step,step_label:label,diagnosis,doctor_id:user.id,doctor_name:user.name}).eq('id',patient.id);
-      setPatients(patients.map(p=>p.id===patient.id?{...p,step,stepLabel:label,diagnosis,doctorId:user.id,doctorName:user.name}:p));
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,step,stepLabel:label,diagnosis,doctorId:user.id,doctorName:user.name}:p));
       toast.success(`Patient → ${label}`);
     }catch(e){toast.error('Erreur: '+(e.message||''));}
   };
@@ -1457,14 +1541,16 @@ function DoctorConsultCard({patient,user,patients,setPatients,labOrders,setLabOr
       <button className="btn btn-primary" onClick={()=>sendTo(4,'Pharmacie (Examens/Méds)')}><i className="fas fa-flask"></i> → Pharmacie (Labo/Méds)</button>
       <button className="btn btn-info" onClick={()=>sendTo(1,'Pharmacie (Pré-Labo)')}><i className="fas fa-pills"></i> → Pharmacie (avant Labo)</button>
       <button className="btn btn-success" onClick={discharge}><i className="fas fa-door-open"></i> Sortie → Pharmacie</button>
+      <button className="btn btn-gold" onClick={()=>onHospitalize(patient)}><i className="fas fa-bed"></i> Hospitaliser</button>
     </div>
   </div>;
 }
 
-/* ===== DOCTOR HOSPITALIZED PATIENT CARD ===== */
-function DoctorHospCard({patient,user,patients,setPatients,labOrders,setLabOrders,prescriptions,setPrescriptions,addNotification,onDossier,toast}){
+/* ===== DOCTOR HOSPITALIZED PATIENT CARD (Doctor: prescriptions, labs, edit info, discharge → pharmacy) ===== */
+function DoctorHospCard({patient,user,patients,setPatients,labOrders,setLabOrders,prescriptions,setPrescriptions,addNotification,onDossier,onEditRoom,toast}){
   const [labDesc,setLabDesc]=useState('');
   const [rxText,setRxText]=useState('');
+  const [diagnosis,setDiagnosis]=useState(patient.diagnosis||'');
   const acts=patient.hospitalization?.acts||[];
   const totalActs=acts.reduce((s,a)=>s+a.price,0);
 
@@ -1486,13 +1572,20 @@ function DoctorHospCard({patient,user,patients,setPatients,labOrders,setLabOrder
       setPrescriptions([...prescriptions,r]);setRxText('');toast.success('Prescription ajoutée');
     }catch(e){toast.error('Erreur');}
   };
-  const discharge=async()=>{
-    if(!confirm(`Décharger ${patient.nom} ${patient.prenom}? Un paiement final sera généré en pharmacie.`))return;
+  const saveDiagnosis=async()=>{
     try{
-      const updHosp={...patient.hospitalization,status:'discharged',dischargedAt:new Date().toISOString(),dischargedBy:user.name};
+      await supabase.from('patients').update({diagnosis}).eq('id',patient.id);
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,diagnosis}:p));
+      toast.success('Diagnostic mis à jour');
+    }catch(e){toast.error('Erreur diagnostic');}
+  };
+  const discharge=async()=>{
+    if(!confirm(`Décharger ${patient.nom} ${patient.prenom}? Le patient sera envoyé en pharmacie pour le paiement final. La sortie ne sera effective qu'une fois le paiement confirmé par la pharmacie.`))return;
+    try{
+      const updHosp={...patient.hospitalization,status:'discharge_pending',dischargeRequestedAt:new Date().toISOString(),dischargeRequestedBy:user.name};
       await supabase.from('patients').update({step:6,step_label:'Pharmacie (Sortie Hospit.)',hospitalization:updHosp}).eq('id',patient.id);
-      setPatients(patients.map(p=>p.id===patient.id?{...p,step:6,stepLabel:'Pharmacie (Sortie Hospit.)',hospitalization:updHosp}:p));
-      toast.success('Patient dirigé vers pharmacie pour paiement final');
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,step:6,stepLabel:'Pharmacie (Sortie Hospit.)',hospitalization:updHosp}:p));
+      toast.success('Patient dirigé vers pharmacie pour paiement final — la sortie sera confirmée après paiement');
     }catch(e){toast.error('Erreur décharge: '+(e.message||''));}
   };
 
@@ -1500,15 +1593,28 @@ function DoctorHospCard({patient,user,patients,setPatients,labOrders,setLabOrder
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:12}}>
       <div style={{display:'flex',gap:12,alignItems:'center'}}><PatientAvatar patient={patient}/><div>
         <div style={{fontWeight:700,fontSize:'14px'}}>{patient.nom} {patient.prenom}</div>
-        <div style={{fontSize:'12px',color:'#0369a1',marginTop:2}}><i className="fas fa-bed"></i> Chambre {patient.hospitalization.room} · {patient.phone}</div>
+        <div style={{fontSize:'12px',color:'#0369a1',marginTop:2,display:'flex',alignItems:'center',gap:8}}>
+          <span><i className="fas fa-bed"></i> Chambre {patient.hospitalization.room}</span>
+          <button className="btn btn-sm btn-outline" style={{padding:'2px 8px'}} onClick={()=>onEditRoom(patient)}><i className="fas fa-pen" style={{fontSize:'10px'}}></i></button>
+          <span>· {patient.phone}</span>
+        </div>
         <div style={{marginTop:6,display:'flex',gap:6}}><InsuranceBadge type={patient.insurance} size="badge-sm"/><span style={{fontSize:'11px',color:'var(--text-muted)'}}>{acts.length} actes infirmiers · {fmt(totalActs)}</span></div>
       </div></div>
       <div style={{display:'flex',gap:8}}>
         <button className="btn btn-sm btn-primary" onClick={()=>onDossier(patient)}><i className="fas fa-folder-open"></i> Dossier</button>
-        <button className="btn btn-sm btn-danger" onClick={discharge}><i className="fas fa-sign-out-alt"></i> Décharger</button>
+        <button className="btn btn-sm btn-danger" onClick={discharge}><i className="fas fa-sign-out-alt"></i> Décharger → Pharmacie</button>
       </div>
     </div>
-    <div style={{marginTop:12,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+
+    {patient.vitals&&<div style={{marginTop:10,background:'rgba(255,255,255,.6)',borderRadius:'var(--r-sm)',padding:'8px 12px',fontSize:'12px'}}>
+      <strong>Vitaux:</strong> T° {patient.vitals.temp||'—'}°C | TA: {patient.vitals.tension||'—'} | Poids: {patient.vitals.poids||'—'}kg | Pouls: {patient.vitals.pouls||'—'}bpm | SpO₂: {patient.vitals.spo2||'—'}%
+    </div>}
+
+    <div className="form-group" style={{marginTop:12,marginBottom:8}}><label>Diagnostic</label>
+      <div style={{display:'flex',gap:8}}><input value={diagnosis} onChange={e=>setDiagnosis(e.target.value)} placeholder="Diagnostic..."/><button className="btn btn-sm btn-gold" onClick={saveDiagnosis}><i className="fas fa-check"></i></button></div>
+    </div>
+
+    <div style={{marginTop:4,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
       <div className="form-group" style={{marginBottom:0}}><label><i className="fas fa-flask"></i> Demande Labo (hospit.)</label>
         <div style={{display:'flex',gap:8}}><input value={labDesc} onChange={e=>setLabDesc(e.target.value)} placeholder="NFS, Glycémie..."/><button className="btn btn-sm btn-primary" onClick={orderLab}><i className="fas fa-plus"></i></button></div>
       </div>
@@ -1543,7 +1649,7 @@ function LabView({user,patients,setPatients,labOrders,setLabOrders,addNotificati
       if(order){
         // Send to NURSE (not directly to doctor — nurse sends to doctor after lab)
         await supabase.from('patients').update({step:2,step_label:'Infirmier (Résultats)',from_lab:true}).eq('id',order.patientId);
-        setPatients(patients.map(p=>p.id===order.patientId?{...p,step:2,stepLabel:'Infirmier (Résultats)',fromLab:true}:p));
+        setPatients(prev=>prev.map(p=>p.id===order.patientId?{...p,step:2,stepLabel:'Infirmier (Résultats)',fromLab:true}:p));
         const patient=patients.find(p=>p.id===order.patientId);
         if(patient?.doctorId){
           addNotification({type:'lab',patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,forDoctorId:patient.doctorId,forDoctorName:patient.doctorName||'',fromUser:user.name,message:`Résultats labo: ${order.description} → Infirmier`});
@@ -1618,9 +1724,19 @@ function PharmacyView({user,patients,setPatients,inventory,setInventory,payments
       const pay={id:'PAY'+Date.now(),patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,amount:amt,description,insurance:patient.insurance,date:new Date().toISOString(),processedBy:user.name};
       const {error}=await supabase.from('payments').insert({id:pay.id,patient_id:patient.id,patient_name:pay.patientName,amount:amt,description,insurance:patient.insurance,date:pay.date,processed_by:user.name});
       if(error)throw error;
-      await supabase.from('patients').update({step:nextStep,step_label:nextLabel,is_new:false}).eq('id',patient.id);
+
+      // If this payment is for a hospitalization discharge, finalize the discharge once paid.
+      let hospUpdate={};
+      let updatedPatientPatch={step:nextStep,stepLabel:nextLabel,isNew:false};
+      if(patient.hospitalization&&patient.hospitalization.status==='discharge_pending'){
+        const finalizedHosp={...patient.hospitalization,status:'discharged',dischargedAt:new Date().toISOString(),dischargedBy:user.name,acts:(patient.hospitalization.acts||[]).map(a=>({...a,paid:true}))};
+        hospUpdate={hospitalization:finalizedHosp};
+        updatedPatientPatch.hospitalization=finalizedHosp;
+      }
+
+      await supabase.from('patients').update({step:nextStep,step_label:nextLabel,is_new:false,...hospUpdate}).eq('id',patient.id);
       setPayments([pay,...payments]);
-      setPatients(patients.map(p=>p.id===patient.id?{...p,step:nextStep,stepLabel:nextLabel,isNew:false}:p));
+      setPatients(prev=>prev.map(p=>p.id===patient.id?{...p,...updatedPatientPatch}:p));
       if(patient.doctorId){addNotification({type:'payment',patientId:patient.id,patientName:`${patient.nom} ${patient.prenom}`,forDoctorId:patient.doctorId,forDoctorName:patient.doctorName||'',fromUser:user.name,message:`Paiement ${fmt(amt)} — ${description}`});}
       toast.success(`${fmt(amt)} encaissé → ${nextLabel}`);
     }catch(e){toast.error('Erreur paiement: '+(e.message||''));}
@@ -1677,14 +1793,14 @@ function PharmacyPayments({queue,payAndForward,payments,labOrders,prescriptions,
     {!queue.length&&<div className="card"><div className="empty-state"><div className="empty-state-icon"><i className="fas fa-cash-register"></i></div><div className="empty-state-title">Caisse à jour</div><div className="empty-state-body">Aucun paiement en attente.</div></div></div>}
     {queue.map(p=>{
       let desc='',nextStep=0,nextLabel='',suggested='',stepColor='var(--accent)',stepIcon='fa-stethoscope';
-      const isHospDischarge=p.step===6&&p.hospitalization?.status==='discharged';
+      const isHospDischarge=p.step===6&&p.hospitalization?.status==='discharge_pending';
       if(p.step===1){desc='Consultation médicale';nextStep=2;nextLabel='Infirmier (Vitaux)';suggested='15000';stepColor='var(--accent)';stepIcon='fa-stethoscope';}
       else if(p.step===4){desc='Examens / Médicaments';nextStep=5;nextLabel='Laboratoire';suggested='25000';stepColor='var(--info-500)';stepIcon='fa-flask';}
       else if(p.step===6&&!isHospDischarge){desc='Frais de sortie';nextStep=7;nextLabel='Terminé';suggested='10000';stepColor='var(--gold-500)';stepIcon='fa-door-open';}
       else if(isHospDischarge){
         const acts=p.hospitalization?.acts||[];
         const actTotal=acts.reduce((s,a)=>s+a.price,0);
-        desc=`Sortie hospitalisation (actes: ${fmt(actTotal)})`;nextStep=7;nextLabel='Terminé';suggested=String(actTotal+10000);stepColor='#0891b2';stepIcon='fa-bed';
+        desc=`Sortie hospitalisation (actes: ${fmt(actTotal)})`;nextStep=7;nextLabel='Terminé — Patient peut sortir';suggested=String(actTotal+10000);stepColor='#0891b2';stepIcon='fa-bed';
       }
       const curVal=amounts[p.id]!==undefined?amounts[p.id]:suggested;
       const insInfo=INSURANCE_INFO[p.insurance]||INSURANCE_INFO['Régulier'];
@@ -1705,13 +1821,14 @@ function PharmacyPayments({queue,payAndForward,payments,labOrders,prescriptions,
             <div style={{display:'flex',gap:6,marginBottom:8,flexWrap:'wrap'}}>
               <InsuranceBadge type={p.insurance}/>
               <span className="badge" style={{background:`${stepColor}1a`,color:stepColor}}><i className={`fas ${stepIcon}`} style={{fontSize:'9px'}}></i> {desc}</span>
-              {isHospDischarge&&<span style={{background:'#e0f2fe',color:'#0369a1',padding:'3px 10px',borderRadius:20,fontSize:'11px',fontWeight:600}}><i className="fas fa-bed"></i> Chambre {p.hospitalization.room}</span>}
+              {isHospDischarge&&<span style={{background:'#e0f2fe',color:'#0369a1',padding:'3px 10px',borderRadius:20,fontSize:'11px',fontWeight:600}}><i className="fas fa-bed"></i> Chambre {p.hospitalization.room} — Sortie demandée par {p.hospitalization.dischargeRequestedBy}</span>}
             </div>
             <div className="patient-flow">{STEPS.map((s,i)=><span key={i} className={`flow-step ${i<p.step?'done':''} ${i===p.step?'current':''}`}>{s}</span>)}</div>
             {isHospDischarge&&p.hospitalization.acts?.length>0&&<div style={{marginTop:8,fontSize:'12px',padding:'8px 12px',background:'#e0f2fe',borderRadius:'var(--r-sm)'}}>
               <strong>Actes infirmiers à facturer:</strong>
               {p.hospitalization.acts.map(a=><div key={a.id} style={{display:'flex',justifyContent:'space-between',marginTop:2}}><span>{a.description}</span><span>{fmt(a.price)}</span></div>)}
             </div>}
+            {isHospDischarge&&<div style={{marginTop:8,fontSize:'11px',color:'var(--gold-600)',fontWeight:600}}><i className="fas fa-info-circle"></i> Le patient ne peut quitter l'hôpital qu'une fois ce paiement encaissé.</div>}
             <PatientActivityFeed patientId={p.id} payments={payments} labOrders={labOrders} prescriptions={prescriptions} limit={3}/>
           </div>
           <div style={{display:'flex',flexDirection:'column',gap:10,minWidth:260}}>
@@ -1726,7 +1843,7 @@ function PharmacyPayments({queue,payAndForward,payments,labOrders,prescriptions,
               <div style={{display:'flex',justifyContent:'space-between',marginBottom:3,color:'var(--success-600)'}}><span>Couvert par {p.insurance} ({discountPct}%):</span><strong>-{fmt(insCovers)}</strong></div>
               <div style={{display:'flex',justifyContent:'space-between',fontWeight:700,fontSize:'12px',paddingTop:3,borderTop:'1px solid var(--border)'}}><span>Patient paie ({insInfo.rate}%):</span><strong style={{color:'var(--primary-700)'}}>{fmt(patientPays>0?patientPays:baseAmt)}</strong></div>
             </div>}
-            <button className="btn btn-success btn-lg" onClick={()=>payAndForward(p,curVal||suggested,desc,nextStep,nextLabel)} style={{justifyContent:'center'}}><i className="fas fa-check-circle"></i> Encaisser & Transférer</button>
+            <button className="btn btn-success btn-lg" onClick={()=>payAndForward(p,curVal||suggested,desc,nextStep,nextLabel)} style={{justifyContent:'center'}}><i className="fas fa-check-circle"></i> {isHospDischarge?'Encaisser & Autoriser la Sortie':'Encaisser & Transférer'}</button>
             <div style={{fontSize:'10.5px',color:'var(--text-muted)',textAlign:'center'}}>→ {nextLabel}</div>
           </div>
         </div>
